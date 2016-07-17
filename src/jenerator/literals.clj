@@ -34,10 +34,17 @@
      {:jenerate :float
       :whole integer
       :fraction integer
+      :shift integer
       :exponent integer}
    All keys are optional. Whole and fractional are zeros by default.
-   Result string is formatted as: '<whole>.<fraction>e<exponent>'"
-  [{:keys [whole fraction exponent] :or {whole 0 fraction 0}}]
-  {:pre [(integer? whole) (integer? fraction) (or (nil? exponent) (integer? exponent))]}
-  (str whole "." fraction (if exponent (str "e" exponent) "")))
+   Shift is the number of zeros between the decimal point and fraction.
+   Result string is formatted as: '<whole>.<shift><fraction>e<exponent>'"
+  [{:keys [whole fraction shift exponent] :or {whole 0 fraction 0 shift 0}}]
+  {:pre [(integer? whole) (integer? fraction)
+         (integer? shift) (>= shift 0)
+         (or (nil? exponent) (integer? exponent))]}
+  (let [shift-str (apply str (take shift (repeat "0")))
+        exponent-str (if exponent (str "e" exponent) "")
+        neg (if (or (neg? whole) (neg? fraction)) "-" "")]
+    (str neg (u/abs whole) "." shift-str (u/abs fraction) exponent-str)))
   
