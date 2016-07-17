@@ -116,3 +116,23 @@
     (is (= (jm/float 2 5) (je/eval [5/2])))
     (is (= (jm/float 12 22) (je/eval [12 22])))
     (is (= (jm/float 12 22 :e -5) (je/eval [12 22 :e -5])))))
+
+(deftest simple-literals
+  
+  (testing "Nil"
+    (is (= "null" (jenerate nil)))
+    (is (= nil (je/eval nil))))
+  
+  (testing "Booleans"
+    (is (= "true" (jenerate true)))
+    (is (= "false" (jenerate false)))
+    (is (= true (je/eval true)))
+    (is (= false (je/eval false))))
+  
+  (testing "Chars"
+    (is (= "'a'" (jenerate \a)))
+    (is (= "'1'" (jenerate \1)))
+    (is (= "'.'" (jenerate \.)))
+    (is (= \a (je/eval \a)))
+    (is (= \1 (je/eval \1)))
+    (is (= \. (je/eval \.)))))
