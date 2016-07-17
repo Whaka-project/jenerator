@@ -1,5 +1,6 @@
 (ns jenerator.literals
-  (:require [jenerator.util :as u]))
+  (:require [jenerator.util :as u]
+            [clojure.string :as s]))
 
 (def valid-integer-bases #{:dec :hex :oct :bin})
 
@@ -47,4 +48,27 @@
         exponent-str (if exponent (str "e" exponent) "")
         neg (if (or (neg? whole) (neg? fraction)) "-" "")]
     (str neg (u/abs whole) "." shift-str (u/abs fraction) exponent-str)))
-  
+
+(def string-escape-chars
+  {\backspace "\\b"
+     \tab "\\t"
+     \newline "\\n"
+     \formfeed "\\f"
+     \return "\\r"
+     \" "\\\""
+     \\ "\\\\"})
+
+(defn jenerate-string-literal
+  "String -> String
+   Convert a string into escaped Java string literal."
+  [s]
+  (str "\"" (s/escape s string-escape-chars) "\""))
+
+(def char-escape-chars
+  (assoc string-escape-chars \' "\\'"))
+
+(defn jenerate-char-literal
+  "Char -> String
+   Convert a char into escaped Java char literal"
+  [c]
+  (str "'" (char-escape-chars c c) "'"))

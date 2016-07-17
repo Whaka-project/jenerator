@@ -9,7 +9,8 @@
   (cond
     (nil? data) "null"
     (contains? #{true false} data) (str data)
-    (char? data) (str "'" data "'")
+    (char? data) (jliterals/jenerate-char-literal data)
+    (string? data) (jliterals/jenerate-string-literal data)
     :else (condp = (:jenerate data)
             :int (jliterals/jenerate-integer-literal data)
             :float (jliterals/jenerate-float-literal data)
