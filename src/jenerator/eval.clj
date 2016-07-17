@@ -26,6 +26,7 @@
   (cond
     (contains? #{true false nil} data) data
     (char? data) data
+    (string? data) data
     :else (match [data]
          
             ; (eval 12) -> (jm/int 12)
