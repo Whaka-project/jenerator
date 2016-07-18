@@ -16,4 +16,4 @@ https://travis-ci.org/Whaka-project/jenerator/pull_requests
 
 ## Mauri mahi, mauri ora; mauri noho, mauri mate.
 
-<img src='http://i.imgur.com/YtakNPK.jpg' width='700px' />
+<img src='http://i.imgur.com/YtakNPK.jpg' width='600px' />
