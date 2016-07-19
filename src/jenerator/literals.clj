@@ -36,18 +36,21 @@
       :whole integer
       :fraction integer
       :shift integer
-      :exponent integer}
+      :exponent integer
+      :suffix (:float|:double)}
    All keys are optional. Whole and fractional are zeros by default.
    Shift is the number of zeros between the decimal point and fraction.
-   Result string is formatted as: '<whole>.<shift><fraction>e<exponent>'"
-  [{:keys [whole fraction shift exponent] :or {whole 0 fraction 0 shift 0}}]
+   Result string is formatted as: '<whole>.<shift><fraction>e<exponent>[F|D]'"
+  [{:keys [whole fraction shift exponent suffix] :or {whole 0 fraction 0 shift 0}}]
   {:pre [(integer? whole) (integer? fraction)
          (integer? shift) (>= shift 0)
-         (or (nil? exponent) (integer? exponent))]}
+         (or (nil? exponent) (integer? exponent))
+         (or (nil? suffix) (keyword? suffix))]}
   (let [shift-str (apply str (take shift (repeat "0")))
         exponent-str (if exponent (str "e" exponent) "")
-        neg (if (or (neg? whole) (neg? fraction)) "-" "")]
-    (str neg (u/abs whole) "." shift-str (u/abs fraction) exponent-str)))
+        neg (if (or (neg? whole) (neg? fraction)) "-" "")
+        suff (if suffix (name suffix) "")]
+    (str neg (u/abs whole) "." shift-str (u/abs fraction) exponent-str suff)))
 
 (def string-escape-chars
   {\backspace "\\b"

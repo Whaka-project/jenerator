@@ -14,16 +14,22 @@
       (jm/float (read-string whole) (read-string trim) :e (read-string exponent) :shift shift)
       (jm/float (read-string whole) (read-string trim) :shift shift))))
 
-(defn- eval-float [num]
+(defn- eval-double-parts [whole fraction exponent]
+  (let [[trim shift] (find-shift fraction)]
+    (if exponent
+      (jm/double (read-string whole) (read-string trim) :e (read-string exponent) :shift shift)
+      (jm/double (read-string whole) (read-string trim) :shift shift))))
+
+(defn- eval-float [num eval-fn]
   (let [s (str num)
         ss (clojure.string/split s #"[\.eE]")]
     (match [ss]
-      [([a] :seq)] (eval-float-parts a nil nil)
-      [([a b] :seq)] (eval-float-parts a b nil)
-      [([a b c] :seq)] (eval-float-parts a b c)
+      [([a] :seq)] (eval-fn a nil nil)
+      [([a b] :seq)] (eval-fn a b nil)
+      [([a b c] :seq)] (eval-fn a b c)
       :else (u/error "Faled to eval float: '" s "'!"))))
 
-(defmacro eval [data]
+(defn eval [data]
   (cond
     (contains? #{true false nil} data) data
     (char? data) data
@@ -39,12 +45,21 @@
             [[:long x]] (jm/long x)
             [[:long x base]] (jm/long x base)
     
-            [(x :guard float?)] (eval-float x)
-            [(x :guard ratio?)] (eval-float (double x))
+            [(x :guard float?)] (eval-float x
+                                  (if ((u/classp Float) x)
+                                    eval-float-parts eval-double-parts))
+            
+            [(x :guard ratio?)] (eval-float (double x) eval-double-parts)
     
-            [[:float (x :guard ratio?)]] (eval-float (double x))
-            [[:float x]] (eval-float x)
+            [[:double (x :guard ratio?)]] (eval-float (double x) eval-double-parts)
+            [[:float (x :guard ratio?)]] (eval-float (double x) eval-float-parts)
+            
+            [[:double x]] (eval-float x eval-double-parts)
+            [[:float x]] (eval-float x eval-float-parts)
     
+            [[:double x y]] (jm/double x y)
+            [[:double x y :e z]] (jm/double x y :e z)
+            
             [[:float x y]] (jm/float x y)
             [[:float x y :e z]] (jm/float x y :e z)
     

@@ -73,6 +73,12 @@
   (testing "jenerate float with default values"
     (is (= "0.0" (jenerate {:jenerate :float}))))
   
+  (testing "jenerate float with double suffix"
+    (is (= "0.0d" (jenerate {:jenerate :float :suffix :d}))))
+  
+  (testing "jenerate float with float suffix"
+    (is (= "0.0f" (jenerate {:jenerate :float :suffix :f}))))
+  
   (testing "jenerate float with default fraction"
     (is (= "12.0" (jenerate {:jenerate :float :whole 12}))))
   
@@ -94,27 +100,40 @@
 (deftest float-macro
   
   (testing "Macro with a whole"
-    (is (= {:jenerate :float :whole 12} (jm/float 12))))
+    (is (= {:jenerate :float :whole 12 :suffix :f} (jm/float 12))))
+  
+  (testing "Double macro with a whole"
+    (is (= {:jenerate :float :whole 12 :suffix :d} (jm/double 12))))
   
   (testing "Macro with a whole and fraction"
-    (is (= {:jenerate :float :whole 12 :fraction 22 :exponent nil :shift 0} (jm/float 12 22))))
+    (is (= {:jenerate :float :whole 12 :fraction 22 :exponent nil :shift 0 :suffix :f} (jm/float 12 22))))
   
   (testing "Macro with a whole and fraction and exponent"
-    (is (= {:jenerate :float :whole 12 :fraction 22 :exponent -5 :shift 0} (jm/float 12 22 :e -5))))
+    (is (= {:jenerate :float :whole 12 :fraction 22 :exponent -5 :shift 0 :suffix :f} (jm/float 12 22 :e -5))))
 
   (testing "Macro with a whole and fraction and exponent and shift"
-    (is (= {:jenerate :float :whole 12 :fraction 22 :exponent -5 :shift 2} (jm/float 12 22 :e -5 :shift 2)))))
+    (is (= {:jenerate :float :whole 12 :fraction 22 :exponent -5 :shift 2 :suffix :f} (jm/float 12 22 :e -5 :shift 2)))))
 
 (deftest float-eval
   
   (testing "Eval floats"
-    (is (= (jm/float 2 5) (je/eval 2.5)))
-    (is (= (jm/float 2 5 :e -5) (je/eval 2.5e-5)))
-    (is (= (jm/float 0 25 :shift 1) (je/eval 2.5e-2)))
-    (is (= (jm/float 2 5) (je/eval 5/2)))
+           
+    (is (= (jm/double 2 5) (je/eval 2.5)))
+    (is (= (jm/double 2 5 :e -5) (je/eval 2.5e-5)))
+    (is (= (jm/double 0 25 :shift 1) (je/eval 2.5e-2)))
+    (is (= (jm/double 2 5) (je/eval 5/2)))
+    
+    (is (= (jm/float 2 5) (je/eval (float 2.5))))
+    (is (= (jm/float 2 5) (je/eval (float 5/2))))
+    
+    (is (= (jm/double 2 5) (je/eval [:double 2.5])))
     (is (= (jm/float 2 5) (je/eval [:float 2.5])))
     (is (= (jm/float 2 5) (je/eval [:float 5/2])))
+    
+    (is (= (jm/double 12 22) (je/eval [:double 12 22])))
     (is (= (jm/float 12 22) (je/eval [:float 12 22])))
+    
+    (is (= (jm/double 12 22 :e -5) (je/eval [:double 12 22 :e -5])))
     (is (= (jm/float 12 22 :e -5) (je/eval [:float 12 22 :e -5])))))
 
 (deftest simple-literals

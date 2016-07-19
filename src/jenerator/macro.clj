@@ -1,15 +1,21 @@
 (ns jenerator.macro)
 
 (defmacro int
-  ([value] `{:jenerate :int :value ~value})
-  ([value base] `{:jenerate :int :value ~value :base ~base}))
+  ([value] {:jenerate :int :value value})
+  ([value base] {:jenerate :int :value value :base base}))
 
 (defmacro long
-  ([value] `{:jenerate :int :value ~value :long true})
-  ([value base] `{:jenerate :int :value ~value :base ~base :long true}))
+  ([value] {:jenerate :int :value value :long true})
+  ([value base] {:jenerate :int :value value :base base :long true}))
 
 (defmacro float
   ([whole]
-    `{:jenerate :float :whole ~whole})
+    {:jenerate :float :whole whole :suffix :f})
   ([whole fraction & {:keys [e shift] :or {shift 0 exponent 0}}]
-    `{:jenerate :float :whole ~whole :fraction ~fraction :exponent ~e :shift ~shift}))
+    {:jenerate :float :whole whole :fraction fraction :exponent e :shift shift :suffix :f}))
+
+(defmacro double
+  ([whole]
+    {:jenerate :float :whole whole :suffix :d})
+  ([whole fraction & {:keys [e shift] :or {shift 0 exponent 0}}]
+    {:jenerate :float :whole whole :fraction fraction :exponent e :shift shift :suffix :d}))
