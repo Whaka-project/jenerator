@@ -10,7 +10,7 @@ Still in progress...
 
 https://waffle.io/Whaka-project/jenerator/join
 
-## CI
+## CI <img src='https://travis-ci.org/Whaka-project/jenerator.svg?branch=master'/>
 
 https://travis-ci.org/Whaka-project/jenerator/pull_requests
 
