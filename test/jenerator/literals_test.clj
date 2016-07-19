@@ -63,10 +63,10 @@
   
   (testing "Eval ints and longs"
     (is (= (jm/int 12) (je/eval 12)))
-    (is (= (jm/int 12) (je/eval [12])))
-    (is (= (jm/int 12 :oct) (je/eval [12 :oct])))
-    (is (= (jm/long 12) (je/eval [12 :long])))
-    (is (= (jm/long 12 :oct) (je/eval [12 :oct :long])))))
+    (is (= (jm/int 12) (je/eval [:int 12])))
+    (is (= (jm/int 12 :oct) (je/eval [:int 12 :oct])))
+    (is (= (jm/long 12) (je/eval [:long 12])))
+    (is (= (jm/long 12 :oct) (je/eval [:long 12 :oct])))))
 
 (deftest jenerate-float
   
@@ -112,10 +112,10 @@
     (is (= (jm/float 2 5 :e -5) (je/eval 2.5e-5)))
     (is (= (jm/float 0 25 :shift 1) (je/eval 2.5e-2)))
     (is (= (jm/float 2 5) (je/eval 5/2)))
-    (is (= (jm/float 2 5) (je/eval [2.5])))
-    (is (= (jm/float 2 5) (je/eval [5/2])))
-    (is (= (jm/float 12 22) (je/eval [12 22])))
-    (is (= (jm/float 12 22 :e -5) (je/eval [12 22 :e -5])))))
+    (is (= (jm/float 2 5) (je/eval [:float 2.5])))
+    (is (= (jm/float 2 5) (je/eval [:float 5/2])))
+    (is (= (jm/float 12 22) (je/eval [:float 12 22])))
+    (is (= (jm/float 12 22 :e -5) (je/eval [:float 12 22 :e -5])))))
 
 (deftest simple-literals
   
