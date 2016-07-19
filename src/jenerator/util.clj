@@ -5,3 +5,6 @@
 
 (defn error [& msg-parts]
   (throw (RuntimeException. (apply str msg-parts))))
+
+(defn classp [expected-class]
+  (fn [x] (= (class x) expected-class)))
