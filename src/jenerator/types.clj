@@ -17,7 +17,7 @@
     (str (name arg-name) " = " value-str)))
 
 (defn jenerate-annotation
-  "({Key -> Any} -> String) -> {Key -> Any} -> String
+  "(Any -> String) -> {Key -> Any} -> String
    Takes a jeneration function and an annotation AST map.
    Uses function to jenerate all annotation arguments (if any).
    Produces string source for Java annotation instantiation."
