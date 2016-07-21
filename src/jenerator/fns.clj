@@ -28,7 +28,8 @@
   ([class arg-key arg-value]
     (let [map (if (and (= :args arg-key) (map? arg-value)) arg-value {arg-key arg-value})]
       {:jenerate :annotation :class class :args map}))
-  ([class arg-key arg-value & {:as other-args}] (ann class :args (assoc other-args arg-key arg-value))))
+  ([class arg-key arg-value & {:as other-args}]
+    (ann class :args (assoc other-args arg-key arg-value))))
                 
                 
                 

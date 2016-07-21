@@ -63,7 +63,6 @@
   
   (testing "Eval ints and longs"
     (are [x y] (= x y)
-      (jm/int 12)  (je/eval 12)
       (jm/int 12)  (je/eval [:int 12])
       (jm/long 12) (je/eval [:long 12])
       (jm/int 12 :oct)  (je/eval [:int 12 :oct])
@@ -120,18 +119,6 @@
   (testing "Eval floats"
     (are [x y] (= x y)
            
-      (jm/double 2 5) (je/eval 2.5)
-      (jm/double 2 5) (je/eval 5/2)
-      (jm/double 2 5 :e -5)     (je/eval 2.5e-5)
-      (jm/double 0 25 :shift 1) (je/eval 2.5e-2)
-     
-      (jm/float 2 5) (je/eval (float 2.5))
-      (jm/float 2 5) (je/eval (float 5/2))
-     
-      (jm/double 2 5) (je/eval [:double 2.5])
-      (jm/float 2 5)  (je/eval [:float 2.5])
-      (jm/float 2 5)  (je/eval [:float 5/2])
-     
       (jm/double 12 22) (je/eval [:double 12 22])
       (jm/float 12 22)  (je/eval [:float 12 22])
      

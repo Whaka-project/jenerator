@@ -20,3 +20,12 @@
 (def jn-args (joiner ", " "(" ")"))
 (def jn-curly (joiner ", " "{" "}"))
 (def jn-generics (joiner ", " "<" ">"))
+
+(defn map-entry [key-fn val-fn m]
+  (into {} (map (fn[[k v]] [(key-fn k) (val-fn v)]) m)))
+
+(defn map-keys [f map]
+  (map-entry f identity map))
+
+(defn map-values [f map]
+  (map-entry identity f map))
