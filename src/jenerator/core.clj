@@ -15,6 +15,7 @@
     (contains? #{true false} data) (str data)
     (char? data) (jliterals/jenerate-char-literal data)
     (string? data) (jliterals/jenerate-string-literal data)
+    (class? data) (jtypes/jenerate-class-ref data)
     :else (condp = (:jenerate data)
             :int (jliterals/jenerate-integer-literal data)
             :float (jliterals/jenerate-float-literal data)
