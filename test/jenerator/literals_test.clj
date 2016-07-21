@@ -1,7 +1,7 @@
 (ns jenerator.literals-test
   (:require [clojure.test :refer :all]
             [jenerator.core :refer :all]
-            [jenerator.macro :as jm]
+            [jenerator.fns :as jm]
             [jenerator.eval :as je]))
 
 (deftest jenerate-int
@@ -39,7 +39,7 @@
   (testing "jenerate binary long"
     (is (= "0b1010L" (jenerate {:jenerate :int :value 10 :base :bin :long true})))))
 
-(deftest int-long-macros
+(deftest int-long-fns
   
   (testing "Int macro"
     (is (= {:jenerate :int :value 12} (jm/int 12))))
@@ -97,7 +97,7 @@
   (testing "jenerate float with exponent and shift"
     (is (= "12.0022e-5" (jenerate {:jenerate :float :whole 12 :fraction 22 :exponent -5 :shift 2})))))
 
-(deftest float-macro
+(deftest float-fns
   
   (testing "Macro with a whole"
     (is (= {:jenerate :float :whole 12 :suffix :f} (jm/float 12))))
@@ -106,7 +106,7 @@
     (is (= {:jenerate :float :whole 12 :suffix :d} (jm/double 12))))
   
   (testing "Macro with a whole and fraction"
-    (is (= {:jenerate :float :whole 12 :fraction 22 :exponent nil :shift 0 :suffix :f} (jm/float 12 22))))
+    (is (= {:jenerate :float :whole 12 :fraction 22 :exponent 0 :shift 0 :suffix :f} (jm/float 12 22))))
   
   (testing "Macro with a whole and fraction and exponent"
     (is (= {:jenerate :float :whole 12 :fraction 22 :exponent -5 :shift 0 :suffix :f} (jm/float 12 22 :e -5))))

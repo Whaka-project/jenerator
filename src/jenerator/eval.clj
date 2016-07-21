@@ -1,6 +1,6 @@
 (ns jenerator.eval
   (:require [jenerator.util :as u]
-            [jenerator.macro :as jm]
+            [jenerator.fns :as jm]
             [clojure.core.match :refer [match]]))
 
 (defn- find-shift [exp]
@@ -8,25 +8,19 @@
         trim (apply str (drop shift exp))]
     [(if (empty? trim) "0" trim) (if (= shift (count exp)) 0 shift)]))
 
-(defn- eval-float-parts [whole fraction exponent]
+(defn- eval-float-parts [whole fraction exponent map-fn]
   (let [[trim shift] (find-shift fraction)]
     (if exponent
-      (jm/float (read-string whole) (read-string trim) :e (read-string exponent) :shift shift)
-      (jm/float (read-string whole) (read-string trim) :shift shift))))
-
-(defn- eval-double-parts [whole fraction exponent]
-  (let [[trim shift] (find-shift fraction)]
-    (if exponent
-      (jm/double (read-string whole) (read-string trim) :e (read-string exponent) :shift shift)
-      (jm/double (read-string whole) (read-string trim) :shift shift))))
+      (map-fn (read-string whole) (read-string trim) :e (read-string exponent) :shift shift)
+      (map-fn (read-string whole) (read-string trim) :shift shift))))
 
 (defn- eval-float [num eval-fn]
   (let [s (str num)
         ss (clojure.string/split s #"[\.eE]")]
     (match [ss]
-      [([a] :seq)] (eval-fn a nil nil)
-      [([a b] :seq)] (eval-fn a b nil)
-      [([a b c] :seq)] (eval-fn a b c)
+      [([a] :seq)] (eval-float-parts a nil nil eval-fn)
+      [([a b] :seq)] (eval-float-parts a b nil eval-fn)
+      [([a b c] :seq)] (eval-float-parts a b c eval-fn)
       :else (u/error "Faled to eval float: '" s "'!"))))
 
 (defn eval [data]
@@ -47,15 +41,15 @@
     
             [(x :guard float?)] (eval-float x
                                   (if ((u/classp Float) x)
-                                    eval-float-parts eval-double-parts))
+                                    jm/float jm/double))
             
-            [(x :guard ratio?)] (eval-float (double x) eval-double-parts)
+            [(x :guard ratio?)] (eval-float (double x) jm/double)
     
-            [[:double (x :guard ratio?)]] (eval-float (double x) eval-double-parts)
-            [[:float (x :guard ratio?)]] (eval-float (double x) eval-float-parts)
+            [[:double (x :guard ratio?)]] (eval-float (double x) jm/double)
+            [[:float (x :guard ratio?)]] (eval-float (double x) jm/float)
             
-            [[:double x]] (eval-float x eval-double-parts)
-            [[:float x]] (eval-float x eval-float-parts)
+            [[:double x]] (eval-float x jm/double)
+            [[:float x]] (eval-float x jm/float)
     
             [[:double x y]] (jm/double x y)
             [[:double x y :e z]] (jm/double x y :e z)
