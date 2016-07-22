@@ -21,6 +21,7 @@
             :int (jliterals/jenerate-integer-literal data)
             :float (jliterals/jenerate-float-literal data)
             :annotation (jtypes/jenerate-annotation jenerate data)
+            :type (jtypes/jenerate-type data)
             nil (u/error "Failed to find `:jenerate` tag in data: " data)
             (u/error "Illegal `:jenerate` tag in data: " data))))
 
