@@ -62,16 +62,14 @@
      \\ "\\\\"})
 
 (defn jenerate-string-literal
-  "String -> String
+  "; String -> String
    Convert a string into escaped Java string literal."
-  [s]
-  (str "\"" (s/escape s string-escape-chars) "\""))
+  [s] (str "\"" (s/escape s string-escape-chars) "\""))
 
 (def char-escape-chars
   (assoc string-escape-chars \' "\\'"))
 
 (defn jenerate-char-literal
-  "Char -> String
+  "; Char -> String
    Convert a char into escaped Java char literal"
-  [c]
-  (str "'" (char-escape-chars c c) "'"))
+  [c] (str "'" (char-escape-chars c c) "'"))

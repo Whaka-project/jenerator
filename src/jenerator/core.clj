@@ -3,16 +3,17 @@
             [jenerator.literals :as jliterals]
             [jenerator.types :as jtypes]))
 
+(declare
+  primitive-data?)
+
 (defn jenerate
   "Map -> String
    Function takes a map of AST data and poduces a string of generated sources"
   [data]
   (cond
     (nil? data) "null"
-    (integer? data) (str data)
-    (float? data) (str data)
+    (primitive-data? data) (str data)
     (ratio? data) (str (double data))
-    (contains? #{true false} data) (str data)
     (char? data) (jliterals/jenerate-char-literal data)
     (string? data) (jliterals/jenerate-string-literal data)
     (class? data) (jtypes/jenerate-class-ref data)
@@ -22,3 +23,9 @@
             :annotation (jtypes/jenerate-annotation jenerate data)
             nil (u/error "Failed to find `:jenerate` tag in data: " data)
             (u/error "Illegal `:jenerate` tag in data: " data))))
+
+(def primitive-data?
+  "; Any -> Boolean
+   Returns `true` if specified value is of primitive type,
+   and may be jenerated by a simple stringification."
+  (u/anyp integer? float? u/boolean?))

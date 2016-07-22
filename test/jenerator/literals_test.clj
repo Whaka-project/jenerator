@@ -129,15 +129,27 @@
   
   (testing "Nil"
     (are [x y] (= x y)
-      "null" (jenerate nil)
-      nil    (je/eval nil)))
+      (jenerate nil) "null"
+      (je/eval nil)  nil))   
   
   (testing "Booleans"
     (are [x y] (= x y)
-      "true"  (jenerate true)
-      "false" (jenerate false)
-      true  (je/eval true)
-      false (je/eval false)))
+      (jenerate true)  "true" 
+      (jenerate false) "false"
+      (je/eval true)   true   
+      (je/eval false)  false))  
+  
+  (testing "Numbers"
+    (are [x y] (= x y)
+      (jenerate 12)   "12"  
+      (jenerate 12.2) "12.2"
+      (je/eval 12)    12    
+      (je/eval 12.2)  12.2))  
+  
+  (testing "Ratio produces imprecise double"
+    (are [x y] (= x y)
+      (jenerate 12/5) (str (double 12/5))
+      (je/eval 12/5)  12/5))
   
   (testing "Chars"
     (are [x y] (= x y)
