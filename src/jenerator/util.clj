@@ -10,6 +10,12 @@
 (defn classp [expected-class]
   (fn [x] (= (class x) expected-class)))
 
+(defn boolean? [x]
+  (or (= x true) (= x false)))
+
+(defn anyp [& predicates]
+  (fn [& args] (some #(apply % args) predicates)))
+
 (defn joiner
   ([delimiter]
     (joiner delimiter "" ""))

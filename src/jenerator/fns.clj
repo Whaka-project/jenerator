@@ -1,4 +1,5 @@
-(ns jenerator.fns)
+(ns jenerator.fns
+  (:refer-clojure :exclude [int long float double]))
 
 (defn int
   ([value] {:jenerate :int :value value})
