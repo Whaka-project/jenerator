@@ -62,11 +62,11 @@
 (deftest int-long-eval
   
   (testing "Eval ints and longs"
-    (is (= (jm/int 12) (je/eval 12)))
-    (is (= (jm/int 12) (je/eval [:int 12])))
-    (is (= (jm/int 12 :oct) (je/eval [:int 12 :oct])))
-    (is (= (jm/long 12) (je/eval [:long 12])))
-    (is (= (jm/long 12 :oct) (je/eval [:long 12 :oct])))))
+    (are [x y] (= x y)
+      (jm/int 12)  (je/eval [:int 12])
+      (jm/long 12) (je/eval [:long 12])
+      (jm/int 12 :oct)  (je/eval [:int 12 :oct])
+      (jm/long 12 :oct) (je/eval [:long 12 :oct]))))
 
 (deftest jenerate-float
   
@@ -117,59 +117,64 @@
 (deftest float-eval
   
   (testing "Eval floats"
+    (are [x y] (= x y)
            
-    (is (= (jm/double 2 5) (je/eval 2.5)))
-    (is (= (jm/double 2 5 :e -5) (je/eval 2.5e-5)))
-    (is (= (jm/double 0 25 :shift 1) (je/eval 2.5e-2)))
-    (is (= (jm/double 2 5) (je/eval 5/2)))
-    
-    (is (= (jm/float 2 5) (je/eval (float 2.5))))
-    (is (= (jm/float 2 5) (je/eval (float 5/2))))
-    
-    (is (= (jm/double 2 5) (je/eval [:double 2.5])))
-    (is (= (jm/float 2 5) (je/eval [:float 2.5])))
-    (is (= (jm/float 2 5) (je/eval [:float 5/2])))
-    
-    (is (= (jm/double 12 22) (je/eval [:double 12 22])))
-    (is (= (jm/float 12 22) (je/eval [:float 12 22])))
-    
-    (is (= (jm/double 12 22 :e -5) (je/eval [:double 12 22 :e -5])))
-    (is (= (jm/float 12 22 :e -5) (je/eval [:float 12 22 :e -5])))))
+      (jm/double 12 22) (je/eval [:double 12 22])
+      (jm/float 12 22)  (je/eval [:float 12 22])
+     
+      (jm/double 12 22 :e -5) (je/eval [:double 12 22 :e -5])
+      (jm/float 12 22 :e -5)  (je/eval [:float 12 22 :e -5]))))
 
 (deftest simple-literals
   
   (testing "Nil"
-    (is (= "null" (jenerate nil)))
-    (is (= nil (je/eval nil))))
+    (are [x y] (= x y)
+      (jenerate nil) "null"
+      (je/eval nil)  nil))   
   
   (testing "Booleans"
-    (is (= "true" (jenerate true)))
-    (is (= "false" (jenerate false)))
-    (is (= true (je/eval true)))
-    (is (= false (je/eval false))))
+    (are [x y] (= x y)
+      (jenerate true)  "true" 
+      (jenerate false) "false"
+      (je/eval true)   true   
+      (je/eval false)  false))  
+  
+  (testing "Numbers"
+    (are [x y] (= x y)
+      (jenerate 12)   "12"  
+      (jenerate 12.2) "12.2"
+      (je/eval 12)    12    
+      (je/eval 12.2)  12.2))  
+  
+  (testing "Ratio produces imprecise double"
+    (are [x y] (= x y)
+      (jenerate 12/5) (str (double 12/5))
+      (je/eval 12/5)  12/5))
   
   (testing "Chars"
-    (is (= "'a'" (jenerate \a)))
-    (is (= "'1'" (jenerate \1)))
-    (is (= "'.'" (jenerate \.)))
-    (is (= "'\\''" (jenerate \')))
-    (is (= "'\\\"'" (jenerate \")))
-    (is (= "'\\t'" (jenerate \tab)))
-    (is (= "'\\b'" (jenerate \backspace)))
-    (is (= "'\\f'" (jenerate \formfeed)))
-    (is (= "'\\r'" (jenerate \return)))
-    (is (= "'\\\\'" (jenerate \\)))
-    (is (= \a (je/eval \a)))
-    (is (= \1 (je/eval \1)))
-    (is (= \. (je/eval \.)))
-    (is (= \tab (je/eval \tab))))
+    (are [x y] (= x y)
+      "'a'"    (jenerate \a)
+      "'1'"    (jenerate \1)
+      "'.'"    (jenerate \.)
+      "'\\''"  (jenerate \')
+      "'\\\"'" (jenerate \")
+      "'\\t'"  (jenerate \tab)
+      "'\\b'"  (jenerate \backspace)
+      "'\\f'"  (jenerate \formfeed)
+      "'\\r'"  (jenerate \return)
+      "'\\\\'" (jenerate \\)
+      \a   (je/eval \a)
+      \1   (je/eval \1)
+      \.   (je/eval \.)
+      \tab (je/eval \tab)))
   
   (testing "Strings"
-    (is (= "\"qwe\"" (jenerate "qwe")))
-    (is (= "\"q\\te\"" (jenerate "q\te")))
-    (is (= "\"q\\be\"" (jenerate "q\be")))
-    (is (= "\"q\\re\"" (jenerate "q\re")))
-    (is (= "\"q\\fe\"" (jenerate "q\fe")))
-    (is (= "\"q\\\\e\"" (jenerate "q\\e")))
-    (is (= "\"q'e\"" (jenerate "q'e")))
-    (is (= "\"q\\\"e\"" (jenerate "q\"e")))))
+    (are [x y] (= x y)
+      "\"qwe\""    (jenerate "qwe")
+      "\"q\\te\""  (jenerate "q\te")
+      "\"q\\be\""  (jenerate "q\be")
+      "\"q\\re\""  (jenerate "q\re")
+      "\"q\\fe\""  (jenerate "q\fe")
+      "\"q\\\\e\"" (jenerate "q\\e")
+      "\"q'e\""    (jenerate "q'e")
+      "\"q\\\"e\"" (jenerate "q\"e"))))

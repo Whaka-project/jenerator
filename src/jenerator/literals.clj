@@ -47,7 +47,7 @@
          (or (nil? exponent) (integer? exponent))
          (or (nil? suffix) (keyword? suffix))]}
   (let [shift-str (apply str (take shift (repeat "0")))
-        exponent-str (if exponent (str "e" exponent) "")
+        exponent-str (if (not= (or exponent 0) 0) (str "e" exponent) "")
         neg (if (or (neg? whole) (neg? fraction)) "-" "")
         suff (if suffix (name suffix) "")]
     (str neg (u/abs whole) "." shift-str (u/abs fraction) exponent-str suff)))
@@ -62,16 +62,14 @@
      \\ "\\\\"})
 
 (defn jenerate-string-literal
-  "String -> String
+  "; String -> String
    Convert a string into escaped Java string literal."
-  [s]
-  (str "\"" (s/escape s string-escape-chars) "\""))
+  [s] (str "\"" (s/escape s string-escape-chars) "\""))
 
 (def char-escape-chars
   (assoc string-escape-chars \' "\\'"))
 
 (defn jenerate-char-literal
-  "Char -> String
+  "; Char -> String
    Convert a char into escaped Java char literal"
-  [c]
-  (str "'" (char-escape-chars c c) "'"))
+  [c] (str "'" (char-escape-chars c c) "'"))

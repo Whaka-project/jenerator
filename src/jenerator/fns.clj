@@ -1,4 +1,5 @@
-(ns jenerator.fns)
+(ns jenerator.fns
+  (:refer-clojure :exclude [int long float double]))
 
 (defn int
   ([value] {:jenerate :int :value value})
@@ -21,3 +22,15 @@
 (defn double
   ([whole] (float* :d whole))
   ([whole fraction & {:keys [e shift] :or {e 0 shift 0} :as map}] (float* :d whole fraction map)))
+
+(defn ann
+  ([class] (ann class :args {}))
+  ([class value] (ann class :value value))
+  ([class arg-key arg-value]
+    (let [map (if (and (= :args arg-key) (map? arg-value)) arg-value {arg-key arg-value})]
+      {:jenerate :annotation :class class :args map}))
+  ([class arg-key arg-value & {:as other-args}]
+    (ann class :args (assoc other-args arg-key arg-value))))
+                
+                
+                
