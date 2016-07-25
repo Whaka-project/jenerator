@@ -1,5 +1,5 @@
 (ns jenerator.fns
-  (:refer-clojure :exclude [int long float double]))
+  (:refer-clojure :exclude [int long float double type]))
 
 (defn int
   ([value] {:jenerate :int :value value})
@@ -31,6 +31,11 @@
       {:jenerate :annotation :class class :args map}))
   ([class arg-key arg-value & {:as other-args}]
     (ann class :args (assoc other-args arg-key arg-value))))
-                
-                
-                
+
+(defn type
+  ([types] (type types 0))
+  ([types array]
+    (let [ftype (if (sequential? types) (first types) types)
+          generics (if (sequential? types) 
+                     (map #(if (or (class? %) (sequential? %)) (type %) %) (rest types)) nil)]
+      {:jenerate :type :type ftype :generics generics :array array})))
