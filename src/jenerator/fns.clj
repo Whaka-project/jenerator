@@ -37,5 +37,5 @@
   ([types array]
     (let [ftype (if (sequential? types) (first types) types)
           generics (if (sequential? types) 
-                     (map #(if (class? %) (type %) %) (rest types)) nil)]
+                     (map #(if (or (class? %) (sequential? %)) (type %) %) (rest types)) nil)]
       {:jenerate :type :type ftype :generics generics :array array})))

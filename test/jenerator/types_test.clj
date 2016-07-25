@@ -67,3 +67,35 @@
     ; `:generics` must be a nil or a sequential collection
     (is (thrown? Error (jenerate {:jenerate :type :type Long :generics "qwe"})))
     (is (thrown? Error (jenerate {:jenerate :type :type Long :generics {}})))))
+
+(deftest type-fn
+  
+  (testing "Simple type jen"
+    (are [x y] (= x y)
+      (jm/type Long)   {:jenerate :type :type Long :generics nil :array 0}
+      (jm/type Number) {:jenerate :type :type Number :generics nil :array 0}))
+  
+  (testing "Array type jen"
+    (are [x y] (= x y)
+      (jm/type Long 1)   {:jenerate :type :type Long :generics nil :array 1}
+      (jm/type Number 2) {:jenerate :type :type Number :generics nil :array 2}))
+  
+  (testing "Generic type jen"
+    (are [x y] (= x y)
+      (jm/type [Long])        {:jenerate :type :type Long :generics [] :array 0}
+      (jm/type [Number Byte]) {:jenerate :type :type Number :generics [(jm/type Byte)] :array 0}))
+  
+  (testing "Deep generic type jen"
+    (are [x y] (= x y)
+      (jm/type [Long [Iterable]])       {:jenerate :type :type Long :generics [(jm/type [Iterable])] :array 0}
+      (jm/type [Long [Iterable Byte]])  {:jenerate :type :type Long :generics [(jm/type [Iterable Byte])] :array 0}))
+  
+  (testing "String test"
+    (are [x y] (= x y)
+      (jenerate (jm/type Long))                       "Long"
+      (jenerate (jm/type Long 1))                     "Long[]"
+      (jenerate (jm/type [Long] 1))                   "Long<>[]"
+      (jenerate (jm/type [Long Byte]))                "Long<Byte>"
+      (jenerate (jm/type [Long Byte Short]))          "Long<Byte, Short>"
+      (jenerate (jm/type [Long Byte [Short]]))        "Long<Byte, Short<>>"
+      (jenerate (jm/type [Long Byte [Short String]])) "Long<Byte, Short<String>>")))
