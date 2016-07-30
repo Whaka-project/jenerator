@@ -1,8 +1,7 @@
 (ns jenerator.literals-test
   (:require [clojure.test :refer :all]
             [jenerator.core :refer :all]
-            [jenerator.fns :as jm]
-            [jenerator.eval :as je]))
+            [jenerator.fns :as jm]))
 
 (deftest jenerate-int
   
@@ -59,15 +58,6 @@
   (testing "Long macro with explicit octal base"
     (is (= {:jenerate :int :value 42 :long true :base :oct} (jm/long 42 :oct)))))
 
-(deftest int-long-eval
-  
-  (testing "Eval ints and longs"
-    (are [x y] (= x y)
-      (jm/int 12)  (je/eval [:int 12])
-      (jm/long 12) (je/eval [:long 12])
-      (jm/int 12 :oct)  (je/eval [:int 12 :oct])
-      (jm/long 12 :oct) (je/eval [:long 12 :oct]))))
-
 (deftest jenerate-float
   
   (testing "jenerate float with default values"
@@ -114,42 +104,25 @@
   (testing "Macro with a whole and fraction and exponent and shift"
     (is (= {:jenerate :float :whole 12 :fraction 22 :exponent -5 :shift 2 :suffix :f} (jm/float 12 22 :e -5 :shift 2)))))
 
-(deftest float-eval
-  
-  (testing "Eval floats"
-    (are [x y] (= x y)
-           
-      (jm/double 12 22) (je/eval [:double 12 22])
-      (jm/float 12 22)  (je/eval [:float 12 22])
-     
-      (jm/double 12 22 :e -5) (je/eval [:double 12 22 :e -5])
-      (jm/float 12 22 :e -5)  (je/eval [:float 12 22 :e -5]))))
-
 (deftest simple-literals
   
   (testing "Nil"
     (are [x y] (= x y)
-      (jenerate nil) "null"
-      (je/eval nil)  nil))   
+      (jenerate nil) "null"))   
   
   (testing "Booleans"
     (are [x y] (= x y)
       (jenerate true)  "true" 
-      (jenerate false) "false"
-      (je/eval true)   true   
-      (je/eval false)  false))  
+      (jenerate false) "false"))  
   
   (testing "Numbers"
     (are [x y] (= x y)
       (jenerate 12)   "12"  
-      (jenerate 12.2) "12.2"
-      (je/eval 12)    12    
-      (je/eval 12.2)  12.2))  
+      (jenerate 12.2) "12.2"))  
   
   (testing "Ratio produces imprecise double"
     (are [x y] (= x y)
-      (jenerate 12/5) (str (double 12/5))
-      (je/eval 12/5)  12/5))
+      (jenerate 12/5) (str (double 12/5))))
   
   (testing "Chars"
     (are [x y] (= x y)
@@ -162,11 +135,7 @@
       "'\\b'"  (jenerate \backspace)
       "'\\f'"  (jenerate \formfeed)
       "'\\r'"  (jenerate \return)
-      "'\\\\'" (jenerate \\)
-      \a   (je/eval \a)
-      \1   (je/eval \1)
-      \.   (je/eval \.)
-      \tab (je/eval \tab)))
+      "'\\\\'" (jenerate \\)))
   
   (testing "Strings"
     (are [x y] (= x y)

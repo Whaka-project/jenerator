@@ -1,8 +1,7 @@
 (ns jenerator.annotation_test
   (:require [clojure.test :refer :all]
             [jenerator.core :refer :all]
-            [jenerator.fns :as jm]
-            [jenerator.eval :as je])
+            [jenerator.fns :as jm])
   (:import [java.lang.annotation Target Retention]))
 
 (deftest jenerate-annotation
@@ -78,40 +77,3 @@
       (jm/ann Deprecated :args {}) {:jenerate :annotation :class Deprecated :args {}}
       (jm/ann Deprecated :args {:value 12}) {:jenerate :annotation :class Deprecated :args {:value 12}}
       (jm/ann Deprecated :args {:name "qwe" :age 42}) {:jenerate :annotation :class Deprecated :args {:name "qwe" :age 42}})))
-
-(deftest eval-ann
-  
-  (testing "Simple ann AST equal to calling `ann` function"
-    (are [x y] (= x y)
-      (je/eval [:ann Deprecated]) (jm/ann Deprecated)
-      (je/eval [:ann Deprecated 12]) (jm/ann Deprecated 12)
-      (je/eval [:ann Deprecated :age 12]) (jm/ann Deprecated :age 12)
-      (je/eval [:ann Deprecated :ages [12 22]]) (jm/ann Deprecated :ages [12 22])
-      (je/eval [:ann Deprecated :name "qwe" :age 42]) (jm/ann Deprecated :name "qwe" :age 42)
-      (je/eval [:ann Deprecated :args 42]) (jm/ann Deprecated :args 42)
-      (je/eval [:ann Deprecated :args {}]) (jm/ann Deprecated :args {})
-      (je/eval [:ann Deprecated :args {:name "qwe"}]) (jm/ann Deprecated :args {:name "qwe"})))
-  
-  (testing "Recursive eval - each ann argument's value is also evaluated"
-    (is (= (je/eval [:ann Deprecated [:long 12]])
-           (jm/ann Deprecated (jm/long 12)))))
-  
-  (testing "Recursive eval - ann argument values evaluated from collection"
-    (is (= (je/eval [:ann Deprecated [[:long 42] [:int 12] [:double 12 22]]])
-           (jm/ann Deprecated [(jm/long 42) (jm/int 12) (jm/double 12 22)]))))
-  
-  (testing "Recursive eval - ann argument values evaluated from implicit map"
-    (is (= (je/eval [:ann Deprecated :age [:long 42] :height [:double 6 2]])
-           (jm/ann Deprecated :age (jm/long 42) :height (jm/double 6 2)))))
-  
-  (testing "Recursive eval - ann argument values evaluated from implicit map collection value"
-    (is (= (je/eval [:ann Deprecated :ages [[:long 42] [:int 12] [:double 12 22]]])
-           (jm/ann Deprecated :ages [(jm/long 42) (jm/int 12) (jm/double 12 22)]))))
-  
-  (testing "Recursive eval - ann argument values evaluated from explicit map"
-    (is (= (je/eval [:ann Deprecated :args {:age [:long 42] :height [:double 6 2]}])
-           (jm/ann Deprecated :args {:age (jm/long 42) :height (jm/double 6 2)}))))
-  
-  (testing "Recursive eval - ann argument values evaluated from explicit map collection value"
-    (is (= (je/eval [:ann Deprecated :ages [[:long 42] [:int 12] [:double 12 22]]])
-           (jm/ann Deprecated :args {:ages [(jm/long 42) (jm/int 12) (jm/double 12 22)]})))))

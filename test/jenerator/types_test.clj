@@ -1,8 +1,7 @@
 (ns jenerator.types_test
   (:require [clojure.test :refer :all]
             [jenerator.core :refer :all]
-            [jenerator.fns :as jm]
-            [jenerator.eval :as je]))
+            [jenerator.fns :as jm]))
 
 (deftest jenerate-type
   
