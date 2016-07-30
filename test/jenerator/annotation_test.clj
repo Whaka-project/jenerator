@@ -8,44 +8,44 @@
   
   (testing "jenerate empty annotations from java.lang"
     (are [x y] (= x y)
-      "@Deprecated()" (jenerate {:jtag :annotation :class Deprecated})
-      "@Deprecated()" (jenerate {:jtag :annotation :class Deprecated :args {}})
-      "@SuppressWarnings()" (jenerate {:jtag :annotation :class SuppressWarnings})
-      "@SuppressWarnings()" (jenerate {:jtag :annotation :class SuppressWarnings :args {}})))
+      "@Deprecated()" (jen {:jtag :annotation :class Deprecated})
+      "@Deprecated()" (jen {:jtag :annotation :class Deprecated :args {}})
+      "@SuppressWarnings()" (jen {:jtag :annotation :class SuppressWarnings})
+      "@SuppressWarnings()" (jen {:jtag :annotation :class SuppressWarnings :args {}})))
   
   (testing "jenerate empty annotations from other packages"
     (are [x y] (= x y)
-      "@java.lang.annotation.Target()" (jenerate {:jtag :annotation :class Target})
-      "@java.lang.annotation.Target()" (jenerate {:jtag :annotation :class Target :args {}})
-      "@java.lang.annotation.Retention()" (jenerate {:jtag :annotation :class Retention})
-      "@java.lang.annotation.Retention()" (jenerate {:jtag :annotation :class Retention :args {}})))
+      "@java.lang.annotation.Target()" (jen {:jtag :annotation :class Target})
+      "@java.lang.annotation.Target()" (jen {:jtag :annotation :class Target :args {}})
+      "@java.lang.annotation.Retention()" (jen {:jtag :annotation :class Retention})
+      "@java.lang.annotation.Retention()" (jen {:jtag :annotation :class Retention :args {}})))
   
   (testing "jenerate annotation with single argument"
     (is (= "@Deprecated(value = 12)"
-           (jenerate {:jtag :annotation :class Deprecated :args {:value 12}}))))
+           (jen {:jtag :annotation :class Deprecated :args {:value 12}}))))
   
   (testing "jenerate annotation with multiple arguments"
     (is (= "@Deprecated(value = 12, name = \"qwe\")"
-           (jenerate {:jtag :annotation :class Deprecated :args {:value 12 :name "qwe"}}))))
+           (jen {:jtag :annotation :class Deprecated :args {:value 12 :name "qwe"}}))))
   
   (testing "jenerate annotation with array argument"
     (is (= "@Deprecated(value = {10, 20, 30})"
-           (jenerate {:jtag :annotation :class Deprecated :args {:value [10 20 30]}}))))
+           (jen {:jtag :annotation :class Deprecated :args {:value [10 20 30]}}))))
   
   (testing "jenerate annotation with multiple array arguments"
     (is (= "@Deprecated(value = {10, 20, 30}, names = {\"qwe\", \"rty\", \"qaz\"})"
-           (jenerate {:jtag :annotation :class Deprecated :args {:value [10 20 30]
+           (jen {:jtag :annotation :class Deprecated :args {:value [10 20 30]
                                                                      :names ["qwe" "rty" "qaz"]}}))))
   
   (testing "annotation arguments are also jenerated"
     (is (= "@Deprecated(value = 12L)"
-           (jenerate {:jtag :annotation
+           (jen {:jtag :annotation
                       :class Deprecated
                       :args {:value {:jtag :int :value 12 :long true}}}))))
   
   (testing "multiple annotation arguments are also jenerated"
     (is (= "@Deprecated(value = {12L, 12.22d, null})"
-           (jenerate {:jtag :annotation
+           (jen {:jtag :annotation
                       :class Deprecated
                       :args {:value [(jm/long 12) (jm/double 12 22) nil]}})))))
 

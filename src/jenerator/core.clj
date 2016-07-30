@@ -6,7 +6,7 @@
 (declare
   primitive-data?)
 
-(defn jenerate
+(defn jen
   "Map -> String
    Function takes a map of AST data and poduces a string of generated sources"
   [data]
@@ -20,7 +20,7 @@
     :else (condp = (:jtag data)
             :int (jliterals/jenerate-integer-literal data)
             :float (jliterals/jenerate-float-literal data)
-            :annotation (jtypes/jenerate-annotation jenerate data)
+            :annotation (jtypes/jenerate-annotation jen data)
             :type (jtypes/jenerate-type data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
