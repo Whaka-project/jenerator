@@ -2,18 +2,18 @@
   (:refer-clojure :exclude [int long float double type]))
 
 (defn int
-  ([value] {:jenerate :int :value value})
-  ([value base] {:jenerate :int :value value :base base}))
+  ([value] {:jtag :int :value value})
+  ([value base] {:jtag :int :value value :base base}))
 
 (defn long
-  ([value] {:jenerate :int :value value :long true})
-  ([value base] {:jenerate :int :value value :base base :long true}))
+  ([value] {:jtag :int :value value :long true})
+  ([value base] {:jtag :int :value value :base base :long true}))
 
 (defn- float*
   ([suffix whole]
-    {:jenerate :float :whole whole :suffix suffix})
+    {:jtag :float :whole whole :suffix suffix})
   ([suffix whole fraction {:keys [e shift] :or {e 0 shift 0}}]
-    {:jenerate :float :whole whole :fraction fraction :exponent e :shift shift :suffix suffix}))
+    {:jtag :float :whole whole :fraction fraction :exponent e :shift shift :suffix suffix}))
 
 (defn float
   ([whole] (float* :f whole))
@@ -28,7 +28,7 @@
   ([class value] (ann class :value value))
   ([class arg-key arg-value]
     (let [map (if (and (= :args arg-key) (map? arg-value)) arg-value {arg-key arg-value})]
-      {:jenerate :annotation :class class :args map}))
+      {:jtag :annotation :class class :args map}))
   ([class arg-key arg-value & {:as other-args}]
     (ann class :args (assoc other-args arg-key arg-value))))
 
@@ -38,4 +38,4 @@
     (let [ftype (if (sequential? types) (first types) types)
           generics (if (sequential? types) 
                      (map #(if (or (class? %) (sequential? %)) (type %) %) (rest types)) nil)]
-      {:jenerate :type :type ftype :generics generics :array array})))
+      {:jtag :type :type ftype :generics generics :array array})))

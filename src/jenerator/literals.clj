@@ -16,7 +16,7 @@
   "{Key: Any} -> String
    Convert map of integer literal AST to string.
    Integer literal AST:
-     {:jenerate :int
+     {:jtag :int
       :value integer
       :base (:dec | :hex | :oct | :bin)
       :long (true | false)}
@@ -32,7 +32,7 @@
   "{Key: Any} -> String
    Convert map of float literal AST to string.
    Float literal AST:
-     {:jenerate :float
+     {:jtag :float
       :whole integer
       :fraction integer
       :shift integer
