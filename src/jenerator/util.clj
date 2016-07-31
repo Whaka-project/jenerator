@@ -12,12 +12,6 @@
    constructed from specified variadic values."
   [& msg-parts] (throw (RuntimeException. (apply str msg-parts))))
 
-(defn classp
-  "; Class -> (Any -> Boolean)
-   Takes class. Returns function that takes one argument
-   and checks if its class is equal to the specified one."
-  [expected-class] (fn [x] (= (class x) expected-class)))
-
 (defn boolean?
   "; Any -> Boolean
    Returns true if specified value is either `true` or `false`"
