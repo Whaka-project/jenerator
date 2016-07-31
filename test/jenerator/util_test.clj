@@ -19,3 +19,13 @@
                         (u/error "msg" 42)))
   (is (thrown-with-msg? RuntimeException #"12\[1 2 3\]"
                         (u/error 1 2 [1 2 3]))))
+
+(deftest test-boolean?
+  (are [x y] (= x y)
+    (u/boolean? true) true
+    (u/boolean? false) true
+    (u/boolean? 12) false
+    (u/boolean? "") false
+    (u/boolean? nil) false
+    (u/boolean? (boolean "")) true
+    (u/boolean? (boolean nil)) true))
