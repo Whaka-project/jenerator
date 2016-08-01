@@ -12,12 +12,6 @@
    constructed from specified variadic values."
   [& msg-parts] (throw (RuntimeException. (apply str msg-parts))))
 
-(defn classp
-  "; Class -> (Any -> Boolean)
-   Takes class. Returns function that takes one argument
-   and checks if its class is equal to the specified one."
-  [expected-class] (fn [x] (= (class x) expected-class)))
-
 (defn boolean?
   "; Any -> Boolean
    Returns true if specified value is either `true` or `false`"
@@ -28,7 +22,7 @@
    Takes any number of predicates that take equal number of arguments.
    Retuns function that takes any number of arguments and applies all predicates to them,
    until one of them returns `truthy` value. Returns `true` if at least one predicate returned truthy value."
-  [& predicates] (fn [& args] (some #(apply % args) predicates)))
+  [& predicates] (fn [& args] (if (some #(apply % args) predicates) true false)))
 
 (defn joiner
   "; String -> ([Any] -> String)

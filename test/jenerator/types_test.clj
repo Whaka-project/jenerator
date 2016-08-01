@@ -22,8 +22,8 @@
       "Long<>" (jen {:jtag :type :type Long :generics []})
       
       ; Note that elements of the :generics seq may only be another type AST map
-      ; Types jeneration isn't fully-recursive, so you cannot specify plain types here.
-      ; But at the same time you don't have to specify :jtag tag, since only reference
+      ; Types jeneration isn't fully-recursive, so you cannot specify plain classes here.
+      ; But at the same time you don't have to specify :jtag tag, since only another type may be used at the place.
       "Byte<Float>" (jen {:jtag :type :type Byte :generics [{:type Float}]})))
 
   (testing "Jenerate primitive array type using :array key"
