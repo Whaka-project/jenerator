@@ -53,3 +53,14 @@
       (joiner-bac []) "bc"
       (joiner-bac [1 2 3]) "b1a2a3c"
       (joiner-bac ["a" "b" "c"]) "baabacc")))
+
+(deftest test-specific-joiners
+  (are [x y] (= x y)
+    (u/jn-comma [1 2 3]) "1, 2, 3"
+    (u/jn-comma []) ""
+    (u/jn-args [1 2 3]) "(1, 2, 3)"
+    (u/jn-args []) "()"
+    (u/jn-curly [1 2 3]) "{1, 2, 3}"
+    (u/jn-curly []) "{}"
+    (u/jn-generics [1 2 3]) "<1, 2, 3>"
+    (u/jn-generics []) "<>"))
