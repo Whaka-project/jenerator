@@ -64,3 +64,21 @@
     (u/jn-curly []) "{}"
     (u/jn-generics [1 2 3]) "<1, 2, 3>"
     (u/jn-generics []) "<>"))
+
+(deftest test-map-entry
+  (are [x y] (= x y)
+    (u/map-entry inc dec {1 2 3 4}) {2 1 4 3}
+    (u/map-entry dec inc {1 2 3 4}) {0 3 2 5}
+    (u/map-entry name keyword {:qwe "aaa" :rty "bbb"}) {"qwe" :aaa "rty" :bbb}))
+
+(deftest test-map-keys
+  (are [x y] (= x y)
+    (u/map-keys inc {1 2 3 4}) {2 2 4 4}
+    (u/map-keys dec {1 2 3 4}) {0 2 2 4}
+    (u/map-keys name {:qwe "aaa" :rty "bbb"}) {"qwe" "aaa" "rty" "bbb"}))
+
+(deftest test-map-values
+  (are [x y] (= x y)
+    (u/map-values inc {1 2 3 4}) {1 3 3 5}
+    (u/map-values dec {1 2 3 4}) {1 1 3 3}
+    (u/map-values keyword {:qwe "aaa" :rty "bbb"}) {:qwe :aaa :rty :bbb}))
