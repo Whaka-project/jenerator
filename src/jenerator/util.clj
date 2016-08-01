@@ -22,7 +22,7 @@
    Takes any number of predicates that take equal number of arguments.
    Retuns function that takes any number of arguments and applies all predicates to them,
    until one of them returns `truthy` value. Returns `true` if at least one predicate returned truthy value."
-  [& predicates] (fn [& args] (some #(apply % args) predicates)))
+  [& predicates] (fn [& args] (if (some #(apply % args) predicates) true false)))
 
 (defn joiner
   "; String -> ([Any] -> String)
