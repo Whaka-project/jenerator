@@ -14,6 +14,6 @@ https://waffle.io/Whaka-project/jenerator/join
 
 https://travis-ci.org/Whaka-project/jenerator/pull_requests
 
-## Mauri mahi, mauri ora; mauri noho, mauri mate.
+## <span title="Industry begets prosperity (security); idleness begets poverty (insecurity).">Mauri mahi, mauri ora; mauri noho, mauri mate.</span>
 
 <img src='http://i.imgur.com/YtakNPK.jpg' width='600px' />
