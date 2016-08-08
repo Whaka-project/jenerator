@@ -98,3 +98,43 @@
       (jen (jm/type [Long Byte Short]))          "Long<Byte, Short>"
       (jen (jm/type [Long Byte [Short]]))        "Long<Byte, Short<>>"
       (jen (jm/type [Long Byte [Short String]])) "Long<Byte, Short<String>>")))
+
+(deftest jenerate-cast
+  (are [x y] (= x y)
+
+    ; Simple cast - value
+    (jen {:jtag :cast :value 12 :type (jm/type :int)})
+    "((int) 12)"
+
+    ; Value is also jenerated
+    (jen {:jtag :cast :value (jm/int 12 :oct) :type (jm/type Long)})
+    "((Long) 014)"
+
+    ; Nested casts
+    (jen {:jtag :cast :type (jm/type :int 1) :value {:jtag :cast :type (jm/type Object) :value nil}})
+    "((int[]) ((Object) null))"))
+
+(deftest cast-fn
+  (are [x y] (= x y)
+
+    ; Cast may be called with a sigle value - then value returned unchanged
+    (jm/cast 12) 12
+    (jm/cast (jm/int 22)) (jm/int 22)
+
+    ; Cast may be called with a value and a type - then cast-AST is produce
+    (jm/cast 12 (jm/type :int)) {:jtag :cast :value 12 :type (jm/type :int)}
+    (jm/cast 12 (jm/type :int 1)) {:jtag :cast :value 12 :type (jm/type :int 1)}
+
+    ; Calling cast with a non-map type[s] will result in implicit call to 'fns/type'
+    (jm/cast 12 :int) (jm/cast 12 (jm/type :int))
+    (jm/cast 12 [Long String]) (jm/cast 12 (jm/type [Long String]))
+    (jm/cast 12 Long String) (jm/cast 12 (jm/type Long) (jm/type String))
+
+    ; Calling cast with multiple types is equal to calling multiple nested casts
+    (jm/cast 12 :int :long) (jm/cast (jm/cast 12 :int) :long)
+    (jm/cast 12 Long String Object) (jm/cast (jm/cast (jm/cast 12 Long) String) Object)
+
+    ; Cast jeneration is pretty straightforward
+    (jen (jm/cast 12 :int)) "((int) 12)"
+    (jen (jm/cast 12 [Class])) "((Class<>) 12)"
+    (jen (jm/cast nil Object [Class Long] (jm/type :int 1))) "((int[]) ((Class<Long>) ((Object) null)))"))
