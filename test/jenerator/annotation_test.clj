@@ -8,17 +8,17 @@
   
   (testing "jenerate empty annotations from java.lang"
     (are [x y] (= x y)
-      "@Deprecated()" (jen {:jtag :annotation :class Deprecated})
-      "@Deprecated()" (jen {:jtag :annotation :class Deprecated :args {}})
-      "@SuppressWarnings()" (jen {:jtag :annotation :class SuppressWarnings})
-      "@SuppressWarnings()" (jen {:jtag :annotation :class SuppressWarnings :args {}})))
+      "@Deprecated" (jen {:jtag :annotation :class Deprecated})
+      "@Deprecated" (jen {:jtag :annotation :class Deprecated :args {}})
+      "@SuppressWarnings" (jen {:jtag :annotation :class SuppressWarnings})
+      "@SuppressWarnings" (jen {:jtag :annotation :class SuppressWarnings :args {}})))
   
   (testing "jenerate empty annotations from other packages"
     (are [x y] (= x y)
-      "@java.lang.annotation.Target()" (jen {:jtag :annotation :class Target})
-      "@java.lang.annotation.Target()" (jen {:jtag :annotation :class Target :args {}})
-      "@java.lang.annotation.Retention()" (jen {:jtag :annotation :class Retention})
-      "@java.lang.annotation.Retention()" (jen {:jtag :annotation :class Retention :args {}})))
+      "@java.lang.annotation.Target" (jen {:jtag :annotation :class Target})
+      "@java.lang.annotation.Target" (jen {:jtag :annotation :class Target :args {}})
+      "@java.lang.annotation.Retention" (jen {:jtag :annotation :class Retention})
+      "@java.lang.annotation.Retention" (jen {:jtag :annotation :class Retention :args {}})))
   
   (testing "jenerate annotation with single argument"
     (is (= "@Deprecated(value = 12)"

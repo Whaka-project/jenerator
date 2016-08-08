@@ -27,7 +27,7 @@
   [jenerate-fn {:keys [class args] :or {args {}}}]
   {:pre [(fn? jenerate-fn) (class? class) (map? args)]}
   (let [body (str "@" (jenerate-class-ref class))]
-    (if (empty? args) (str body "()")
+    (if (empty? args) body
       (str body (u/jn-args (map (partial jenerate-annotation-arg jenerate-fn) args))))))
 
 (declare

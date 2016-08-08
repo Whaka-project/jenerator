@@ -39,3 +39,22 @@
           generics (if (sequential? types) 
                      (map #(if (or (class? %) (sequential? %)) (type %) %) (rest types)) nil)]
       {:jtag :type :type ftype :generics generics :array array})))
+
+(defn var
+  "; {Key -> Any}* -> Key* -> Class -> String -> {Key -> Any}
+   Weird varargs at the beginning of the argument-list denote
+   that function actually expects only 2 last arguments - other are optional.
+   Function takes 0+ annotation AST-maps, then 0+ modifier keywords,
+   then single Class, and then a single string name - in that order.
+   Result - AST-map for a var declaration.
+
+   Examples:
+     (var Long \"var\")
+     (var :final Long \"var\")
+     (var (ann Deprecated) :private :final Long \"var\")"
+  [& rest]
+  {:pre (>= (count rest) 2)}
+  (let [[name type & stuff] (reverse rest)
+        [modifiers annotations] (split-with keyword? stuff)]
+    {:jtag :var :annotations (reverse annotations)
+     :modifiers (reverse modifiers) :type type :name name}))

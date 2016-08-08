@@ -1,7 +1,9 @@
 (ns jenerator.core
-  (:require [jenerator.util :as u]
-            [jenerator.literals :as jliterals]
-            [jenerator.types :as jtypes]))
+  (:require [jenerator
+             [declarations :as jdecl]
+             [literals :as jliterals]
+             [types :as jtypes]
+             [util :as u]]))
 
 (declare
   primitive-data?)
@@ -22,6 +24,7 @@
             :float (jliterals/jenerate-float-literal data)
             :annotation (jtypes/jenerate-annotation jen data)
             :type (jtypes/jenerate-type data)
+            :var (jdecl/jenerate-var jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 
