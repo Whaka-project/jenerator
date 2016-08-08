@@ -24,6 +24,7 @@
             :float (jliterals/jenerate-float-literal data)
             :annotation (jtypes/jenerate-annotation jen data)
             :type (jtypes/jenerate-type data)
+            :cast (jtypes/jenerate-cast jen data)
             :var (jdecl/jenerate-var jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))

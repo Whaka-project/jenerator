@@ -40,6 +40,17 @@
                      (map #(if (or (class? %) (sequential? %)) (type %) %) (rest types)) nil)]
       {:jtag :type :type ftype :generics generics :array array})))
 
+(defn cast
+  [value & types]
+  (reduce (fn [val type]
+            {:jtag :cast
+             :value val
+             :type (if (map? type)
+                     type
+                     (jenerator.fns/type type))})
+          value
+          types))
+
 (defn var
   "; {Key -> Any}* -> Key* -> Class -> String -> {Key -> Any}
    Weird varargs at the beginning of the argument-list denote

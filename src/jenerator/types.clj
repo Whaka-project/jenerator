@@ -53,3 +53,9 @@
          (and (integer? array) (>= array 0))]}
   (let [type-str (if (keyword? type) (jenerate-primitive-type type) (jenerate-reference-type map))]
     (str type-str (apply str (take array (repeat "[]"))))))
+
+(defn jenerate-cast
+  [jen-fn {:keys [type value]}]
+  (let [type-str (jenerate-type type)
+        value-str (jen-fn value)]
+    (str "((" type-str ") " value-str ")")))
