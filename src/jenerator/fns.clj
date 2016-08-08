@@ -1,5 +1,5 @@
 (ns jenerator.fns
-  (:refer-clojure :exclude [int long float double type]))
+  (:refer-clojure :exclude [int long float double type cast]))
 
 (defn int
   ([value] {:jtag :int :value value})
@@ -39,6 +39,20 @@
           generics (if (sequential? types) 
                      (map #(if (or (class? %) (sequential? %)) (type %) %) (rest types)) nil)]
       {:jtag :type :type ftype :generics generics :array array})))
+
+(defn cast
+  "; Any -> (AST | Class | [Class])* -> AST
+   Function takes a value and and any number of 'type descriptors'.
+   Type descriptor is either a type AST map, or anything that may be passed
+   to the 'fns/type' fnction as argument.
+   Returns - nested AST maps of casting the value to all specified types
+   consequentially (last type will be the final result of the cast)."
+  [value & types]
+  (reduce (fn [val type]
+            {:jtag :cast :value val
+             :type (if (map? type) type
+                     (jenerator.fns/type type))})
+          value types))
 
 (defn var
   "; {Key -> Any}* -> Key* -> Class -> String -> {Key -> Any}
