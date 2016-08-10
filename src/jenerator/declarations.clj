@@ -10,7 +10,7 @@
      :annotations - [Annotation-AST]
      :modifiers - [Key]
      :type - Type-AST
-     :name - Strin
+     :name - String
 
    Annotations and type are also jenerated.
    Modifiers are not validated, but must be keywords.
