@@ -29,3 +29,4 @@
     (fns/var (fns/ann Deprecated) :private Long "qwe")
     {:jtag :var :type Long :name "qwe" :annotations [(fns/ann Deprecated)] :modifiers [:private]}
     ))
+
