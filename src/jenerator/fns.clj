@@ -72,3 +72,23 @@
         [modifiers annotations] (split-with keyword? stuff)]
     {:jtag :var :annotations (reverse annotations)
      :modifiers (reverse modifiers) :type type :name name}))
+
+(defn decl
+  "; Var-AST -> Any -> ([String, Any]) -> Decl-AST
+   Function takes a var AST map, a value, and optional seq of pairs of additional declarations.
+   Returns AS map describing a variable declaration with initializers.
+   If first argument is not a map - it's assumed that it's a seq of values,
+   and function 'fns/var' will be applied to it.
+
+   Exaples:
+     (fns/decl (fns/var String \"s\") nil)
+     (fns/decl [String \"s\"] nil)
+     (fns/decl [:int \"i\"] 12 [[\"n\" 13] [\"k\" 14]])
+     (fns/decl [:int \"i\"] 12 {\"n\" 13 \"k\" 14})
+
+   It is decided not to have 'rest' args destructured as a map,
+   so it would be more convinient for callers to generate calls programatically."
+  ([var value] (decl var value nil))
+  ([var value values]
+   (let [var-ast (if (map? var) var (apply jenerator.fns/var var))]
+     {:jtag :decl :var var-ast :value value :values values})))

@@ -26,6 +26,7 @@
             :type (jtypes/jenerate-type data)
             :cast (jtypes/jenerate-cast jen data)
             :var (jdecl/jenerate-var jen data)
+            :decl (jdecl/jenerate-decl jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 
