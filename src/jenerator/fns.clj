@@ -67,7 +67,7 @@
      (var :final Long \"var\")
      (var (ann Deprecated) :private :final Long \"var\")"
   [& rest]
-  {:pre (>= (count rest) 2)}
+  {:pre [(>= (count rest) 2)]}
   (let [[name type & stuff] (reverse rest)
         [modifiers annotations] (split-with keyword? stuff)]
     {:jtag :var :annotations (reverse annotations)
