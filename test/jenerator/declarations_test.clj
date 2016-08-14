@@ -15,21 +15,28 @@
 
 (deftest= var-fn
 
-    (fns/var Long "qwe")
-    {:jtag :var :type Long :name "qwe" :annotations [] :modifiers []}
+  (fns/var Long "qwe")
+  {:jtag :var :type Long :name "qwe" :annotations [] :modifiers []}
 
-    (fns/var :final Long "qwe")
-    {:jtag :var :type Long :name "qwe" :annotations [] :modifiers [:final]}
+  (fns/var :final Long "qwe")
+  {:jtag :var :type Long :name "qwe" :annotations [] :modifiers [:final]}
 
-    (fns/var :private :final Long "qwe")
-    {:jtag :var :type Long :name "qwe" :annotations [] :modifiers [:private :final]}
+  (fns/var :private :final Long "qwe")
+  {:jtag :var :type Long :name "qwe" :annotations [] :modifiers [:private :final]}
 
-    (fns/var (fns/ann Deprecated) Long "qwe")
-    {:jtag :var :type Long :name "qwe" :annotations [(fns/ann Deprecated)] :modifiers []}
+  (fns/var (fns/ann Deprecated) Long "qwe")
+  {:jtag :var :type Long :name "qwe" :annotations [(fns/ann Deprecated)] :modifiers []}
 
-    (fns/var (fns/ann Deprecated) :private Long "qwe")
-    {:jtag :var :type Long :name "qwe" :annotations [(fns/ann Deprecated)] :modifiers [:private]}
-    )
+  (fns/var (fns/ann Deprecated) :private Long "qwe")
+  {:jtag :var :type Long :name "qwe" :annotations [(fns/ann Deprecated)] :modifiers [:private]}
+  )
+
+(deftest var-fn-assertions
+  ; 'var' with less than two arguments throws assertion
+  (is (thrown? AssertionError (fns/var)))
+  (is (thrown? AssertionError (fns/var String)))
+  (is (thrown? AssertionError (fns/var "s")))
+  )
 
 (deftest= jenerate-decl
   (jen {:jtag :decl :var (fns/var String "s") :value nil}) "String s = null"
