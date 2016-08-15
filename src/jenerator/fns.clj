@@ -1,5 +1,5 @@
 (ns jenerator.fns
-  (:refer-clojure :exclude [int long float double type cast]))
+  (:refer-clojure :exclude [int long float double type cast not]))
 
 (defn int
   ([value] {:jtag :int :value value})
@@ -92,3 +92,15 @@
   ([var value values]
    (let [var-ast (if (map? var) var (apply jenerator.fns/var var))]
      {:jtag :decl :var var-ast :value value :values values})))
+
+(defn unary
+  [a b]
+  {:pre [(or (symbol? a) (symbol? b))]}
+  (let [[jtag op value] (if (symbol? a)
+                          [:pre a b]
+                          [:post b a])]
+    {:jtag jtag :value value :op op}))
+
+(defn not
+  [x]
+  (unary '! x))
