@@ -2,6 +2,7 @@
   (:require [jenerator
              [declarations :as jdecl]
              [literals :as jliterals]
+             [operations :as jops]
              [types :as jtypes]
              [util :as u]]))
 
@@ -27,6 +28,8 @@
             :cast (jtypes/jenerate-cast jen data)
             :var (jdecl/jenerate-var jen data)
             :decl (jdecl/jenerate-decl jen data)
+            :pre (jops/jenerate-prefix jen data)
+            :post (jops/jenerate-postfix jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 
