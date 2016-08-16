@@ -94,6 +94,13 @@
      {:jtag :decl :var var-ast :value value :values values})))
 
 (defn unary
+  "; Any -> Any -> (UnaryPrefix-AST | UnaryPostfix-AST)
+   Takes two argument. Either one MUST be a symbol.
+   The one that's a symbol will be considered an operation.
+   Another one will be considered a value.
+   If two symbols is passed - first one considered an operation.
+   Returns UnaryPrefix-AST if first argument is the operation.
+   Returns UnaryPostfix-AST in other case."
   [a b]
   {:pre [(or (symbol? a) (symbol? b))]}
   (let [[jtag op value] (if (symbol? a)
@@ -101,6 +108,12 @@
                           [:post b a])]
     {:jtag jtag :value value :op op}))
 
+(comment
+; This function is commented out, since it must wrap specified value in brackets.
+; No brackets AST is available yet.
 (defn not
+  "; Any -> UnaryPrefix-AST
+   Takes a single value and produces AST for unary prefix negation (!)."
   [x]
   (unary '! x))
+)
