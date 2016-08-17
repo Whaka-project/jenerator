@@ -136,6 +136,7 @@
    If an operand is a vector - `bin` is also applied to it.
    Example: (bin [12 '+ 13] '* 14) == (bin (bin 12 '+ 13) '* 14)"
   [left op right]
-  {:left (apply-if-v bin left)
+  {:jtag :bin
+   :left (apply-if-v bin left)
    :right (apply-if-v bin right)
    :op op})
