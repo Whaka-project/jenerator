@@ -30,6 +30,7 @@
             :decl (jdecl/jenerate-decl jen data)
             :pre (jops/jenerate-prefix jen data)
             :post (jops/jenerate-postfix jen data)
+            :bin (jops/jenerate-binary jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 

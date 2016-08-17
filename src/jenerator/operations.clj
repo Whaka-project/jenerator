@@ -21,7 +21,7 @@
    Returns Java source code string.
 
    UnaryPostfix-AST:
-     :valie - Any
+     :value - Any
      :op - Symbol
 
    Value will also be jeneated.
@@ -29,3 +29,19 @@
   [jen-fn {:keys [value op]}]
   {:pre [(symbol? op)]}
   (str (jen-fn value) op))
+
+(defn jenerate-binary
+  "; (Any -> String) -> Binary-AST -> String
+   Takes a jen function and an AST map for binary operation.
+   Returns Java source code string.
+
+   Binary-AST:
+     :left - Any
+     :right - Any
+     :op - Symbol
+
+   Left and right operands will also be jenerated.
+   Operation may be represented only as a symbol."
+  [jen-fn {:keys [left right op]}]
+  {:pre [(symbol? op)]}
+  (str (jen-fn left) " " op " " (jen-fn right)))

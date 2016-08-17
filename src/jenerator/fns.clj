@@ -117,3 +117,26 @@
   [x]
   (unary '! x))
 )
+
+(defn- apply-if-v
+  "; (T* -> R) -> (A | Vec[T]) -> (A | R)
+   Takes a function and any element.
+   If element is a vector - applies the function to it and returns the result.
+   Otherwise returns the specified element."
+  [f x]
+  (if (vector? x) (apply f x) x))
+
+; Should `bin` also jenerate brackets?
+(defn bin
+  "; Any -> Symbol -> Any -> Binary-AST
+   Takes left operand, operation symbol, and right operand.
+   Returns AST map representing multiple nested binary operations.
+   Example: (bin 12 '+ 13)
+
+   If an operand is a vector - `bin` is also applied to it.
+   Example: (bin [12 '+ 13] '* 14) == (bin (bin 12 '+ 13) '* 14)"
+  [left op right]
+  {:jtag :bin
+   :left (apply-if-v bin left)
+   :right (apply-if-v bin right)
+   :op op})
