@@ -119,7 +119,7 @@
 )
 
 (defn- apply-if-v
-  "; (T* -> R) -> (A | [T]) -> (A | R)
+  "; (T* -> R) -> (A | Vec[T]) -> (A | R)
    Takes a function and any element.
    If element is a vector - applies the function to it and returns the result.
    Otherwise returns the specified element."
