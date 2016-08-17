@@ -29,3 +29,8 @@
   [jen-fn {:keys [value op]}]
   {:pre [(symbol? op)]}
   (str (jen-fn value) op))
+
+(defn jenerate-binary
+  [jen-fn {:keys [left right op]}]
+  {:pre [(symbol? op)]}
+  (str (jen-fn left) " " op " " (jen-fn right)))

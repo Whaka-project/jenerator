@@ -117,3 +117,17 @@
   [x]
   (unary '! x))
 )
+
+; Should `bin` also jenerate brackets?
+(defn bin
+  "; Any -> Symbol -> Any (-> Symbol -> Any)* -> Binary-AST
+   Takes two or more elenets SEPARATED by operation symbols.
+   Returns AST map representing multiple nested binary operations.
+   Examples:
+     (bin 12 '+ 13)
+     (bin 12 '+ 13 '- 14)
+     (bin 12 '+ 13 '- 14 '* 15)"
+  ([a op b] {:jtag :bin :left a :op op :right b})
+  ([a op b & rest]
+    {:pre [(even? (count rest))]}
+    (apply bin (list* (bin a op b) rest))))
