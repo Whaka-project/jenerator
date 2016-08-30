@@ -31,6 +31,7 @@
             :pre (jops/jenerate-prefix jen data)
             :post (jops/jenerate-postfix jen data)
             :bin (jops/jenerate-binary jen data)
+            :br (jops/jenerate-brackets jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 
