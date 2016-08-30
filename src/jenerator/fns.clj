@@ -1,6 +1,13 @@
 (ns jenerator.fns
   (:refer-clojure :exclude [int long float double type cast not]))
 
+(defn br
+  "; Any -> Brackets-AST
+   Takes any value and produces an AST map for brackets expression.
+   Example: (br 12)"
+  [value]
+  {:jtag :br :value value})
+
 (defn int
   ([value] {:jtag :int :value value})
   ([value base] {:jtag :int :value value :base base}))
@@ -108,15 +115,11 @@
                           [:post b a])]
     {:jtag jtag :value value :op op}))
 
-(comment
-; This function is commented out, since it must wrap specified value in brackets.
-; No brackets AST is available yet.
 (defn not
   "; Any -> UnaryPrefix-AST
    Takes a single value and produces AST for unary prefix negation (!)."
   [x]
-  (unary '! x))
-)
+  (unary '! (br x)))
 
 (defn- apply-if-v
   "; (T* -> R) -> (A | Vec[T]) -> (A | R)
@@ -126,7 +129,6 @@
   [f x]
   (if (vector? x) (apply f x) x))
 
-; Should `bin` also jenerate brackets?
 (defn bin
   "; Any -> Symbol -> Any -> Binary-AST
    Takes left operand, operation symbol, and right operand.
@@ -136,7 +138,8 @@
    If an operand is a vector - `bin` is also applied to it.
    Example: (bin [12 '+ 13] '* 14) == (bin (bin 12 '+ 13) '* 14)"
   [left op right]
-  {:jtag :bin
-   :left (apply-if-v bin left)
-   :right (apply-if-v bin right)
-   :op op})
+  (let [bin-br (comp br bin)]
+    {:jtag :bin
+     :left (apply-if-v bin-br left)
+     :right (apply-if-v bin-br right)
+     :op op}))

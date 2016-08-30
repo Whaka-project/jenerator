@@ -45,3 +45,17 @@
   [jen-fn {:keys [left right op]}]
   {:pre [(symbol? op)]}
   (str (jen-fn left) " " op " " (jen-fn right)))
+
+(defn jenerate-brackets
+  "; (Any -> String) -> Brackets-AST -> String
+   Takes a jen function and an AST map for brackets expression.
+   Returns Java source code string.
+
+   Brackets-AST:
+     :value - Any
+
+   Value s also jenerated.
+   Note value MUST be present in the map, or excepton will be thrown."
+  [jen-fn {:keys [value] :or {value ::none}}]
+  {:pre [(not= value ::none)]}
+  (str \( (jen-fn value) \)))

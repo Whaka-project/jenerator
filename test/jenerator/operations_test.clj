@@ -26,7 +26,26 @@
   (j/bin 12 '* 22) {:jtag :bin :left 12 :right 22 :op '*}
   (j/bin "qwe" '+ nil) {:jtag :bin :left "qwe" :right nil :op '+}
 
-  ; Operand passed as a vector will automatically simulate `bin` call and produce nested AST
-  (j/bin 12 '* [5 '+ 6]) (j/bin 12 '* (j/bin 5 '+ 6))
-  (j/bin 12 '* [5 '+ 6]) {:jtag :bin :left 12 :op '* :right {:jtag :bin :left 5 :op '+ :right 6}}
+  ; Operand passed as a vector will automatically simulate `bin` and `br` call and produce nested AST
+  (j/bin 12 '* [5 '+ 6]) (j/bin 12 '* (j/br (j/bin 5 '+ 6)))
+  (j/bin 12 '* [5 '+ 6]) {:jtag :bin :left 12 :op '* :right {:jtag :br :value {:jtag :bin :left 5 :op '+ :right 6}}}
+
+  (jen (j/bin 12 '* [22 '+ 13])) "12 * (22 + 13)"
+  )
+
+(deftest= jenerate-brackets
+  (jen {:jtag :br :value nil}) "(null)"
+  (jen {:jtag :br :value 12}) "(12)"
+  (jen {:jtag :br :value "qwe"}) "(\"qwe\")"
+  )
+
+(deftest= br-fn
+  (j/br nil) {:jtag :br :value nil}
+  (j/br 12) {:jtag :br :value 12}
+  (j/br "qwe") {:jtag :br :value "qwe"}
+  )
+
+(deftest= not-fn
+  (j/not true) {:jtag :pre :op '! :value {:jtag :br :value true}}
+  (jen (j/not (j/bin 12 '< 22))) "!(12 < 22)"
   )
