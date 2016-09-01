@@ -3,7 +3,8 @@
             [jenerator
              [core :refer [jen]]
              [fns :as fns]
-             [test-macros :refer [deftest=]]]))
+             [test-macros :refer [deftest=]]]
+            [jenerator.fns :as j]))
 
 (deftest= jenerate-var
 
@@ -16,19 +17,19 @@
 (deftest= var-fn
 
   (fns/var Long "qwe")
-  {:jtag :var :type Long :name "qwe" :annotations [] :modifiers []}
+  {:jtag :var :type (fns/type Long) :name "qwe" :annotations [] :modifiers []}
 
   (fns/var :final Long "qwe")
-  {:jtag :var :type Long :name "qwe" :annotations [] :modifiers [:final]}
+  {:jtag :var :type (fns/type Long) :name "qwe" :annotations [] :modifiers [:final]}
 
   (fns/var :private :final Long "qwe")
-  {:jtag :var :type Long :name "qwe" :annotations [] :modifiers [:private :final]}
+  {:jtag :var :type (fns/type Long) :name "qwe" :annotations [] :modifiers [:private :final]}
 
   (fns/var (fns/ann Deprecated) Long "qwe")
-  {:jtag :var :type Long :name "qwe" :annotations [(fns/ann Deprecated)] :modifiers []}
+  {:jtag :var :type (fns/type Long) :name "qwe" :annotations [(fns/ann Deprecated)] :modifiers []}
 
   (fns/var (fns/ann Deprecated) :private Long "qwe")
-  {:jtag :var :type Long :name "qwe" :annotations [(fns/ann Deprecated)] :modifiers [:private]}
+  {:jtag :var :type (fns/type Long) :name "qwe" :annotations [(fns/ann Deprecated)] :modifiers [:private]}
   )
 
 (deftest var-fn-assertions
