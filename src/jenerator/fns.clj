@@ -184,3 +184,11 @@
      :left (apply-if-v bin-br left)
      :right (apply-if-v bin-br right)
      :op op}))
+
+(defn field
+  [target field]
+  {:jtag :field :target target :field field})
+
+(defn clref
+  [target]
+  (field target "class"))

@@ -9,8 +9,10 @@
    Takes a class. Returns either a full name, or a simple name,
    based on whether class is from `java.lang` package."
   [class-ref]
-  (let [package (-> class-ref .getPackage .getName)]
-    (if (= package "java.lang") (.getSimpleName class-ref) (.getName class-ref))))
+  (if (symbol? class-ref)
+    (name class-ref)
+    (let [package (-> class-ref .getPackage .getName)]
+      (if (= package "java.lang") (.getSimpleName class-ref) (.getName class-ref)))))
 
 (defn- jenerate-annotation-arg [jenerate-fn [arg-name value]]
   {:pre [(keyword? arg-name)]}
@@ -42,14 +44,14 @@
 
 (defn- jenerate-reference-type
   [{:keys [type generics] :or {generics nil}}]
-  {:pre [(class? type) (or (nil? generics) (sequential? generics))]}
+  {:pre [(or (class? type) (symbol? type)) (or (nil? generics) (sequential? generics))]}
   (str (jenerate-class-ref type)
        (if-not (sequential? generics) ""
          (u/jn-generics (map jenerate-type generics)))))
 
 (defn jenerate-type
   [{:keys [type array] :or {array 0} :as map}]
-  {:pre [(or (keyword? type) (class? type))
+  {:pre [(or (keyword? type) (class? type) (symbol? type))
          (and (integer? array) (>= array 0))]}
   (let [type-str (if (keyword? type) (jenerate-primitive-type type) (jenerate-reference-type map))]
     (str type-str (apply str (take array (repeat "[]"))))))

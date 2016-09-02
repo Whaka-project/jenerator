@@ -59,3 +59,8 @@
   [jen-fn {:keys [value] :or {value ::none}}]
   {:pre [(not= value ::none)]}
   (str \( (jen-fn value) \)))
+
+(defn jenerate-field-access
+  [jen-fn {:keys [target field]}]
+  {:pre [(string? field)]}
+  (str (jen-fn target) "." field))
