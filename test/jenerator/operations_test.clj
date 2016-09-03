@@ -49,3 +49,21 @@
   (j/not true) {:jtag :pre :op '! :value {:jtag :br :value true}}
   (jen (j/not (j/bin 12 '< 22))) "!(12 < 22)"
   )
+
+(deftest= jenerate-field-ref
+  (jen {:jtag :field :target Integer :field "MAX_VALUE"}) "Integer.MAX_VALUE"
+  (jen {:jtag :field :target Boolean :field "TRUE"}) "Boolean.TRUE"
+  (jen {:jtag :field :target "qwe" :field "x"}) "\"qwe\".x"
+  )
+
+(deftest= field-fn
+  (j/field Integer "MAX_VALUE") {:jtag :field :target Integer :field "MAX_VALUE"}
+  (j/field String "class") {:jtag :field :target String :field "class"}
+  (jen (j/field Boolean "TRUE")) "Boolean.TRUE"
+  )
+
+(deftest= clref-fn
+  (j/clref String) {:jtag :field :target String :field "class"}
+  (jen (j/clref Byte)) "Byte.class"
+  (jen (j/clref (j/type :int 1))) "int[].class"
+  )

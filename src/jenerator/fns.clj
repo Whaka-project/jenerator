@@ -186,9 +186,17 @@
      :op op}))
 
 (defn field
+  "; Any -> String -> FieldRef-AST
+   Takes any target and string field name.
+   Returns an AST map that represents a field access operation.
+   Example: (field Integer \"MAX_VALUE\")"
   [target field]
   {:jtag :field :target target :field field})
 
 (defn clref
+  "; Any -> FieldRef-AST
+   Takes any target.
+   Returns an AST map that represents a '.class' field access.
+   Example: (clref String) = (field String \"class\")"
   [target]
   (field target "class"))
