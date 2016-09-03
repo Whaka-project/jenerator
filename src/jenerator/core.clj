@@ -19,7 +19,7 @@
     (ratio? data) (str (double data))
     (char? data) (jliterals/jenerate-char-literal data)
     (string? data) (jliterals/jenerate-string-literal data)
-    (class? data) (jtypes/jenerate-class-ref data)
+    (or (class? data) (symbol? data)) (jtypes/jenerate-class-ref data)
     :else (condp = (:jtag data)
             :int (jliterals/jenerate-integer-literal data)
             :float (jliterals/jenerate-float-literal data)
@@ -32,6 +32,7 @@
             :post (jops/jenerate-postfix jen data)
             :bin (jops/jenerate-binary jen data)
             :br (jops/jenerate-brackets jen data)
+            :field (jops/jenerate-field-access jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 

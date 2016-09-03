@@ -59,3 +59,17 @@
   [jen-fn {:keys [value] :or {value ::none}}]
   {:pre [(not= value ::none)]}
   (str \( (jen-fn value) \)))
+
+(defn jenerate-field-access
+  "; (Any -> String) -> FieldRef-AST -> String
+   Takes a jen function and an AST map for field access.
+   Returns Java source code string.
+
+   FieldRef-AST:
+     :target - Any
+     :field - String
+
+   Target is also jenerated."
+  [jen-fn {:keys [target field]}]
+  {:pre [(string? field)]}
+  (str (jen-fn target) "." field))
