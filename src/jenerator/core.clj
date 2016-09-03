@@ -33,6 +33,7 @@
             :bin (jops/jenerate-binary jen data)
             :br (jops/jenerate-brackets jen data)
             :field (jops/jenerate-field-access jen data)
+            :method (jops/jenerate-method-call jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 
