@@ -80,3 +80,8 @@
    Applies the function to each value in the map.
    Returns new map with result values."
   [f map] (map-entry identity f map))
+
+(defn str-lines
+  "Equal to 'str' but all elements are interposes with \newline character."
+  [& lines]
+  (apply str (interpose \newline lines)))

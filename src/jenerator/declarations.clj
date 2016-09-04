@@ -50,7 +50,7 @@
   (let [var-str (jen-fn var)
         value-str (jen-fn value)
         main-str (str var-str " = " value-str)]
-    (reduce (fn [main-str [name value]]
-              (str main-str ", " name " = " (jen-fn value)))
-            main-str
-            values)))
+    (str (reduce (fn [main-str [name value]]
+               (str main-str ", " name " = " (jen-fn value)))
+             main-str
+             values) ";")))

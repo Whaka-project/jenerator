@@ -234,3 +234,10 @@
           {:jtag :method :target target :method method :args args}))
       target
       calls)))
+
+(defn block
+  "; [Any] -> Block-AST
+   Takes a vararg of any statement ASTs.
+   Returns a Block-AST map."
+  [& statements]
+  {:jtag :block :statements statements})

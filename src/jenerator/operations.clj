@@ -1,6 +1,11 @@
 (ns jenerator.operations
   (:require [jenerator.util :as u]))
 
+(defn- check-as-statement
+  [data res]
+  (if (-> data meta :as-statement)
+    (str res ";") res))
+
 (defn jenerate-prefix
   "; (Any -> String) -> UnaryPrefix-AST -> String
    Takes a jen function and an AST map for unary prefix operation.
@@ -12,9 +17,10 @@
 
    Value will also be jenerated.
    Operation may be represented only as a symbol."
-  [jen-fn {:keys [value op]}]
+  [jen-fn {:keys [value op] :as data}]
   {:pre [(symbol? op)]}
-  (str op (jen-fn value)))
+  (check-as-statement data
+    (str op (jen-fn value))))
 
 (defn jenerate-postfix
   "; (Any -> String) -> UnaryPostfix-AST -> String
@@ -27,9 +33,10 @@
 
    Value will also be jeneated.
    Operation may be represented only as a symbol."
-  [jen-fn {:keys [value op]}]
+  [jen-fn {:keys [value op] :as data}]
   {:pre [(symbol? op)]}
-  (str (jen-fn value) op))
+  (check-as-statement data
+    (str (jen-fn value) op)))
 
 (defn jenerate-binary
   "; (Any -> String) -> Binary-AST -> String
@@ -43,9 +50,10 @@
 
    Left and right operands will also be jenerated.
    Operation may be represented only as a symbol."
-  [jen-fn {:keys [left right op]}]
+  [jen-fn {:keys [left right op] :as data}]
   {:pre [(symbol? op)]}
-  (str (jen-fn left) " " op " " (jen-fn right)))
+  (check-as-statement data
+    (str (jen-fn left) " " op " " (jen-fn right))))
 
 (defn jenerate-brackets
   "; (Any -> String) -> Brackets-AST -> String
@@ -86,6 +94,7 @@
      :args - [Any]
 
    Target and each arg are also jenerated."
-  [jen-fn {:keys [target method args]}]
+  [jen-fn {:keys [target method args] :as data}]
   {:pre [(string? method) (or (nil? args) (sequential? args))]}
-  (str (jen-fn target) "." method (->> args (map jen-fn) u/jn-args)))
+  (check-as-statement data
+    (str (jen-fn target) "." method (->> args (map jen-fn) u/jn-args))))
