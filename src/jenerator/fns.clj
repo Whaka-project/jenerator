@@ -1,5 +1,5 @@
 (ns jenerator.fns
-  (:refer-clojure :exclude [int long float double type cast not])
+  (:refer-clojure :exclude [int long float double type cast not if])
   (:require [jenerator.util :as u]))
 
 (defn- apply-if-v
@@ -241,3 +241,11 @@
    Returns a Block-AST map."
   [& statements]
   {:jtag :block :statements statements})
+
+(defn if
+  [cond then & elses]
+  (let [main-if {:jtag :if :cond cond :then then}]
+    (case (count elses)
+      0 main-if
+      1 (assoc main-if :else (first elses))
+      (assoc main-if :else (apply if elses)))))
