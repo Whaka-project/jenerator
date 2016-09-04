@@ -40,10 +40,10 @@
   )
 
 (deftest= jenerate-decl
-  (jen {:jtag :decl :var (fns/var String "s") :value nil}) "String s = null"
-  (jen {:jtag :decl :var (fns/var :final String "s") :value "qwe"}) "final String s = \"qwe\""
-  (jen {:jtag :decl :var (fns/var String "s") :value nil :values [["s2" nil] ["s3" nil]]}) "String s = null, s2 = null, s3 = null"
-  (jen {:jtag :decl :var (fns/var String "s") :value nil :values {"s2" nil "s3" nil}}) "String s = null, s2 = null, s3 = null"
+  (jen {:jtag :decl :var (fns/var String "s") :value nil}) "String s = null;"
+  (jen {:jtag :decl :var (fns/var :final String "s") :value "qwe"}) "final String s = \"qwe\";"
+  (jen {:jtag :decl :var (fns/var String "s") :value nil :values [["s2" nil] ["s3" nil]]}) "String s = null, s2 = null, s3 = null;"
+  (jen {:jtag :decl :var (fns/var String "s") :value nil :values {"s2" nil "s3" nil}}) "String s = null, s2 = null, s3 = null;"
   )
 
 (deftest= decl-fn
