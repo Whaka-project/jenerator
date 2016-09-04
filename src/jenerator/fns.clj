@@ -1,5 +1,5 @@
 (ns jenerator.fns
-  (:refer-clojure :exclude [int long float double type cast not])
+  (:refer-clojure :exclude [int long float double type cast not if])
   (:require [jenerator.util :as u]))
 
 (defn- apply-if-v
@@ -241,3 +241,23 @@
    Returns a Block-AST map."
   [& statements]
   {:jtag :block :statements statements})
+
+(defn if
+  "; Any -> Any -> Any* -> IfThenElse-AST
+   Takes multiple (but at leas one) pair of conditions and results,
+   and optional one last result without a condition.
+   Returns an AST map for if-then-else statement.
+   If a single pair of a condition and a result was specified - AST for single 'if' is produced.
+   If multiple pairs of conditions and results were specfied - 'else if' is produced for each next pair.
+   If there's a single last element that does not have a pair - 'else' branch is produced for it.
+   Examples:
+     (if a b)       -> 'if (a) { b }'
+     (if a b c)     -> 'if (a) { b } else { c }'
+     (if a b c d)   -> 'if (a) { b } else if (c) { d }'
+     (if a b c d e) -> 'if (a) { b } else if (c) { d } else { e }'"
+  [cond then & elses]
+  (let [main-if {:jtag :if :cond cond :then then}]
+    (case (count elses)
+      0 main-if
+      1 (assoc main-if :else (first elses))
+      (assoc main-if :else (apply if elses)))))
