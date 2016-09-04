@@ -22,13 +22,20 @@
          combined-tabbed-lines (apply u/str-lines tabbed-lines)]
      (str "{" \newline combined-tabbed-lines \newline "}"))))
 
-(defn- block?
-  "Returns true if specified data is a Block-AST map"
-  [data] (and (associative? data) (= (:jtag data) :block)))
+(defn- jtag?
+  "Returns true is second argument is a map,
+   and contains first argument under ':jtag' key."
+  [jtag data]
+  (and (associative? data)
+       (= (:jtag data) jtag)))
 
-(defn- if?
+(def ^:private block?
+  "Returns true if specified data is a Block-AST map"
+  (partial jtag? :block))
+
+(def ^:private if?
   "Returns true if specified data is an IfThenElse-AST"
-  [data] (and (associative? data) (= (:jtag data) :if)))
+  (partial jtag? :if))
 
 (defn- ensure-block
   "If specified data is a Block-AST map - returns it unchanged.
@@ -38,6 +45,18 @@
     {:jtag :block :statements [data]}))
 
 (defn jenerate-if
+  "; (Any -> String) -> IfThenElse-AST -> String
+   Takes a jen function and an AST map for 'if-then-else' statement.
+   Returns Java source string.
+
+   IfThenElse-AST:
+     :cond - Any (required)
+     :then - Any (required, non-nil)
+     :else - Any
+
+   All elements are also jenerated.
+   If 'then' and 'else' elements are not Block-ASTs - they are wrapped.
+   If 'else' branch if IfThenElse-AST - excessive braces are omited."
   [jen-fn {:keys [cond then else] :as data}]
   {:pre [(contains? data :cond) (some? then)]}
   (let [header-str (str "if (" (jen-fn cond) ") ")
