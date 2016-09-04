@@ -3,6 +3,7 @@
              [declarations :as jdecl]
              [literals :as jliterals]
              [operations :as jops]
+             [statements :as jstats]
              [types :as jtypes]
              [util :as u]]))
 
@@ -34,6 +35,7 @@
             :br (jops/jenerate-brackets jen data)
             :field (jops/jenerate-field-access jen data)
             :method (jops/jenerate-method-call jen data)
+            :block (jstats/jenerate-code-block jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 
