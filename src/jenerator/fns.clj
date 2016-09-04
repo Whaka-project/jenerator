@@ -186,12 +186,22 @@
      :op op}))
 
 (defn field
-  "; Any -> String -> FieldRef-AST
-   Takes any target and string field name.
-   Returns an AST map that represents a field access operation.
-   Example: (field Integer \"MAX_VALUE\")"
-  [target field]
-  {:jtag :field :target target :field field})
+  "; T -> String* -> (T | FieldRef-AST)
+   Takes any target and vararg of string field names.
+   If at least one field name was specified - returns FieldRef-AST map.
+   If no field names was specified - target is returned unchanged.
+
+   Example:
+    (field Integer \"MAX_VALUE\")
+    (field Boolean \"TRUE\" \"value\")
+
+   When multiple field names are specified - nested AST are returned"
+  [target & fields]
+  (reduce
+    (fn[target field]
+      {:jtag :field :target target :field field})
+    target
+    fields))
 
 (defn clref
   "; Any -> FieldRef-AST
@@ -200,3 +210,27 @@
    Example: (clref String) = (field String \"class\")"
   [target]
   (field target "class"))
+
+(defn call
+  "; T -> (String | [String, Any*])* -> (T | MethodCall-AST)
+   Takes any target and vararg of 'method call' parts.
+   If there was at least one 'method call' part specified - returns MethodCall-AST map.
+   If no 'method call' parts was specified - targt is returned unchanged.
+   This 'method call' part is: either a string, or a vector that contains a string and any number of args.
+
+   Examples:
+     (call System \"println\")
+     (call \"qwe\" \"toUpperCase\" \"length\")
+     (call String [\"valueOf\" nil] [\"substring\" 1 3] \"toUpperCase\")
+
+   When multiple 'method call' parts are specified - nested method call ASTs will be reurned."
+  [target & calls]
+  (let [split-call #(if (vector? %)
+                      [(first %) (seq (rest %))]
+                      [% nil])]
+    (reduce
+      (fn[target call]
+        (let [[method args] (split-call call)]
+          {:jtag :method :target target :method method :args args}))
+      target
+      calls)))

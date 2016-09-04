@@ -1,4 +1,5 @@
-(ns jenerator.operations)
+(ns jenerator.operations
+  (:require [jenerator.util :as u]))
 
 (defn jenerate-prefix
   "; (Any -> String) -> UnaryPrefix-AST -> String
@@ -73,3 +74,18 @@
   [jen-fn {:keys [target field]}]
   {:pre [(string? field)]}
   (str (jen-fn target) "." field))
+
+(defn jenerate-method-call
+  "; (Any -> String) -> MethodCall-AST -> String
+   Takes a jen function and an AST map for method call.
+   Returns Java source code string.
+
+   MethodCall-AST:
+     :target - Any
+     :method - String
+     :args - [Any]
+
+   Target and each arg are also jenerated."
+  [jen-fn {:keys [target method args]}]
+  {:pre [(string? method) (or (nil? args) (sequential? args))]}
+  (str (jen-fn target) "." method (->> args (map jen-fn) u/jn-args)))
