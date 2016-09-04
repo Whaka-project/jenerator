@@ -60,10 +60,34 @@
   (j/field Integer "MAX_VALUE") {:jtag :field :target Integer :field "MAX_VALUE"}
   (j/field String "class") {:jtag :field :target String :field "class"}
   (jen (j/field Boolean "TRUE")) "Boolean.TRUE"
+  ; Chained field access is available
+  (j/field Boolean "FALSE" "value") (j/field (j/field Boolean "FALSE") "value")
+  (jen (j/field Boolean "FALSE" "value")) "Boolean.FALSE.value"
   )
 
 (deftest= clref-fn
   (j/clref String) {:jtag :field :target String :field "class"}
   (jen (j/clref Byte)) "Byte.class"
   (jen (j/clref (j/type :int 1))) "int[].class"
+  )
+
+(deftest= jenerate-method-call
+  (jen {:jtag :method :target (j/field System "out") :method "println"}) "System.out.println()"
+  (jen {:jtag :method :target (j/field System "out") :method "println" :args [12]}) "System.out.println(12)"
+  (jen {:jtag :method :target (j/field System "out") :method "printf" :args ["qwe" nil]}) "System.out.printf(\"qwe\", null)"
+  )
+
+(deftest= call-fn
+  (j/call (j/field System "out") "println") {:jtag :method :target (j/field System "out") :method "println" :args nil}
+  (j/call "qwe" "length") {:jtag :method :target "qwe" :method "length" :args nil}
+
+  ; Method may be placed in a vector
+  (j/call "qwe" ["length"]) {:jtag :method :target "qwe" :method "length" :args nil}
+
+  ; To add argumens - method MUST be placed in a vector
+  (j/call "qwe" ["charAt" 2]) {:jtag :method :target "qwe" :method "charAt" :args [2]}
+  (jen (j/call "qwe" ["charAt" 2])) "\"qwe\".charAt(2)"
+
+  ; Method calls may be chained
+  (jen (j/call String ["valueOf" nil] ["substring" 1 3] "toUpperCase" ["charAt" 1])) "String.valueOf(null).substring(1, 3).toUpperCase().charAt(1)"
   )

@@ -226,7 +226,7 @@
    When multiple 'method call' parts are specified - nested method call ASTs will be reurned."
   [target & calls]
   (let [split-call #(if (vector? %)
-                      [(first %) (rest %)]
+                      [(first %) (seq (rest %))]
                       [% nil])]
     (reduce
       (fn[target call]
