@@ -66,3 +66,12 @@
                      (jen-fn (if (if? else) else
                                (ensure-block else)))))]
     (str header-str then-str else-str)))
+
+(defn jenerate-for
+  [jen-fn {:keys [decl test iters body]}]
+  {:pre [(and decl test (every? some? iters))]}
+  (let [decl-str (jen-fn decl)
+        test-str (jen-fn test)
+        iter-str (->> iters (map jen-fn) u/jn-comma)
+        body-str (jen-fn (ensure-block body))]
+    (str "for (" decl-str " " test-str "; " iter-str ") " body-str)))
