@@ -13,14 +13,14 @@
    Each staement is also jenerated with ':as-statement' meta value.
    Output string is formatted with tabs."
   [jen-fn {:keys [statements] :as data}]
-  (if (empty? statements) "{}"
+  (if (empty? statements) "{\n}"
    (let [jen-statement (fn[st] (jen-fn (vary-meta st assoc :as-statement true)))
          jenerated-statements (map jen-statement statements)
          combined-statements (apply u/str-lines jenerated-statements)
          lines (s/split-lines combined-statements)
          tabbed-lines (map #(str \tab %) lines)
          combined-tabbed-lines (apply u/str-lines tabbed-lines)]
-     (str "{" \newline combined-tabbed-lines \newline "}"))))
+     (str "{\n" combined-tabbed-lines "\n}"))))
 
 (defn- jtag?
   "Returns true is second argument is a map,
@@ -42,7 +42,7 @@
    Otherwise - wraps it into a block AST and returns it."
   [data]
   (if (block? data) data
-    {:jtag :block :statements [data]}))
+    {:jtag :block :statements (if (nil? data) [] [data])}))
 
 (defn jenerate-if
   "; (Any -> String) -> IfThenElse-AST -> String
@@ -69,9 +69,10 @@
 
 (defn jenerate-for
   [jen-fn {:keys [decl test iters body]}]
-  {:pre [(and decl test (every? some? iters))]}
-  (let [decl-str (jen-fn decl)
-        test-str (jen-fn test)
+  {:pre [(or (nil? iters) (map? iters) (every? some? iters))]}
+  (let [decl-str (if (nil? decl) ";" (jen-fn decl))
+        test-str (if (nil? test) "" (jen-fn test))
+        iters (if (map? iters) [iters] iters)
         iter-str (->> iters (map jen-fn) u/jn-comma)
         body-str (jen-fn (ensure-block body))]
     (str "for (" decl-str " " test-str "; " iter-str ") " body-str)))
