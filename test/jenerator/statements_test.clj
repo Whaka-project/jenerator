@@ -7,8 +7,8 @@
 (def st (j/unary 12 '++))
 
 (deftest= jenerate-block
-  (jen {:jtag :block}) "{}"
-  (jen {:jtag :block :statements []}) "{}"
+  (jen {:jtag :block}) "{\n}"
+  (jen {:jtag :block :statements []}) "{\n}"
   (jen {:jtag :block :statements [st]}) "{\n\t12++;\n}"
   (jen {:jtag :block :statements [st]}) "{\n\t12++;\n}"
   )
@@ -48,4 +48,97 @@
 
   (j/if 12 st 13 st st)
   {:jtag :if :cond 12 :then st :else {:jtag :if :cond 13 :then st :else st}}
+  )
+
+(deftest= jenerate-for
+
+  (jen {:jtag :for
+        :decl (j/decl [:int "i"] 0)
+        :test (j/bin 12 '< 0)
+        :iters (j/unary 12 '++)
+        :body (j/call System ["exit" 0])})
+  "for (int i = 0; 12 < 0; 12++) {\n\tSystem.exit(0);\n}"
+
+  (jen {:jtag :for
+        :decl (j/decl [:int "i"] 0 [["j" 1]])
+        :test (j/bin [12 '< 0] '&& [13 '> 100])
+        :iters [(j/unary 12 '++) (j/unary '-- 13)]
+        :body (j/block
+                (j/call System ["exit" 0])
+                (j/call (j/field System "out") ["println" nil]))})
+  "for (int i = 0, j = 1; (12 < 0) && (13 > 100); 12++, --13) {\n\tSystem.exit(0);\n\tSystem.out.println(null);\n}"
+
+  (jen {:jtag :for
+        :decl nil
+        :test (j/bin 12 '< 0)
+        :iters (j/unary 12 '++)
+        :body (j/call System ["exit" 0])})
+  "for (; 12 < 0; 12++) {\n\tSystem.exit(0);\n}"
+
+  (jen {:jtag :for
+        :decl (j/decl [:int "i"] 0)
+        :test nil
+        :iters (j/unary 12 '++)
+        :body (j/call System ["exit" 0])})
+  "for (int i = 0; ; 12++) {\n\tSystem.exit(0);\n}"
+
+  (jen {:jtag :for
+        :decl (j/decl [:int "i"] 0)
+        :test (j/bin 12 '< 0)
+        :iters nil
+        :body (j/call System ["exit" 0])})
+  "for (int i = 0; 12 < 0; ) {\n\tSystem.exit(0);\n}"
+
+  (jen {:jtag :for
+        :decl (j/decl [:int "i"] 0)
+        :test (j/bin 12 '< 0)
+        :iters (j/unary 12 '++)
+        :body nil})
+  "for (int i = 0; 12 < 0; 12++) {\n}"
+
+  (jen {:jtag :for})
+  "for (; ; ) {\n}"
+  )
+
+(deftest= for-fn
+
+  (j/for [(j/decl [String "s"] "qwe")
+          (j/bin 12 '< 0)
+          (j/unary 12 '++)]
+    (j/call System ["exit" 0]))
+  {:jtag :for
+   :decl (j/decl [String "s"] "qwe")
+   :test (j/bin 12 '< 0)
+   :iters (list (j/unary 12 '++))
+   :body (j/call System ["exit" 0])}
+
+  (j/for [(j/decl [String "s"] "qwe")
+          (j/bin 12 '< 0)
+          (j/unary 12 '++)
+          (j/unary 13 '--)]
+    (j/call System ["exit" 0])
+    (j/call System ["exit" 1]))
+  {:jtag :for
+   :decl (j/decl [String "s"] "qwe")
+   :test (j/bin 12 '< 0)
+   :iters (list (j/unary 12 '++) (j/unary 13 '--))
+   :body (j/block
+           (j/call System ["exit" 0])
+           (j/call System ["exit" 1]))}
+
+  (j/for [(j/decl [String "s"] "qwe")
+          (j/bin 12 '< 0)]
+    )
+  {:jtag :for
+   :decl (j/decl [String "s"] "qwe")
+   :test (j/bin 12 '< 0)
+   :iters nil
+   :body nil}
+
+  (j/for [nil nil])
+  {:jtag :for
+   :decl nil
+   :test nil
+   :iters nil
+   :body nil}
   )

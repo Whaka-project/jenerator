@@ -1,5 +1,5 @@
 (ns jenerator.fns
-  (:refer-clojure :exclude [int long float double type cast not if])
+  (:refer-clojure :exclude [int long float double type cast not if for])
   (:require [jenerator.util :as u]))
 
 (defn- apply-if-v
@@ -261,3 +261,22 @@
       0 main-if
       1 (assoc main-if :else (first elses))
       (assoc main-if :else (apply if elses)))))
+
+(defn for
+  "; [Any, Any, Any*] -> Any* -> For-AST
+   Takes a vector of at least two elements: [decl, test, iters*]
+   And a vararg of 'body' statements.
+   Returns an AST map for the 'for' statement.
+
+   Produced AST will represent a 'for' statement of the form:
+     'for (decl; test; iter[, iters]) { body }'
+
+   There may be zero or multiple iters (iteration actions).
+   If you want to jenerate empty decl or test - specify nil.
+   Body may be empty."
+  [[decl test & iters] & body]
+  {:jtag :for :decl decl :test test :iters iters
+   :body (case (count body)
+           0 nil
+           1 (first body)
+           (apply block body))})

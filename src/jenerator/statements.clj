@@ -13,14 +13,14 @@
    Each staement is also jenerated with ':as-statement' meta value.
    Output string is formatted with tabs."
   [jen-fn {:keys [statements] :as data}]
-  (if (empty? statements) "{}"
+  (if (empty? statements) "{\n}"
    (let [jen-statement (fn[st] (jen-fn (vary-meta st assoc :as-statement true)))
          jenerated-statements (map jen-statement statements)
          combined-statements (apply u/str-lines jenerated-statements)
          lines (s/split-lines combined-statements)
          tabbed-lines (map #(str \tab %) lines)
          combined-tabbed-lines (apply u/str-lines tabbed-lines)]
-     (str "{" \newline combined-tabbed-lines \newline "}"))))
+     (str "{\n" combined-tabbed-lines "\n}"))))
 
 (defn- jtag?
   "Returns true is second argument is a map,
@@ -42,7 +42,7 @@
    Otherwise - wraps it into a block AST and returns it."
   [data]
   (if (block? data) data
-    {:jtag :block :statements [data]}))
+    {:jtag :block :statements (if (nil? data) [] [data])}))
 
 (defn jenerate-if
   "; (Any -> String) -> IfThenElse-AST -> String
@@ -66,3 +66,33 @@
                      (jen-fn (if (if? else) else
                                (ensure-block else)))))]
     (str header-str then-str else-str)))
+
+(defn jenerate-for
+  "; (Any -> String) -> For-AST -> String
+   Takes a jen function and an AST map for 'for' statement.
+   Retrns Java source string.
+
+   For-AST:
+     :decl - Any
+     :test - Any
+     :iters - (Map | [Map])
+     :body - Any
+
+   Jenerated statements will have the form:
+     for (decl; test; iter[, iters]) { body }
+
+   Any element may be nil - in this case corresponding element ill be missing.
+   (E.g. no declaration or a predicate, which is totally valid in the 'for'.)
+
+   ':iters' may be either a map (single AST element) or a seqable collection,
+   of multiple elements - in this case multiple iteration actions wil be jenerated.
+
+   In case of an empty body - result 'for' will have an empty {} brackets."
+  [jen-fn {:keys [decl test iters body]}]
+  {:pre [(or (nil? iters) (map? iters) (every? some? iters))]}
+  (let [decl-str (if (nil? decl) ";" (jen-fn decl))
+        test-str (if (nil? test) "" (jen-fn test))
+        iters (if (map? iters) [iters] iters)
+        iter-str (->> iters (map jen-fn) u/jn-comma)
+        body-str (jen-fn (ensure-block body))]
+    (str "for (" decl-str " " test-str "; " iter-str ") " body-str)))
