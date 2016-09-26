@@ -68,6 +68,26 @@
     (str header-str then-str else-str)))
 
 (defn jenerate-for
+  "; (Any -> String) -> For-AST -> String
+   Takes a jen function and an AST map for 'for' statement.
+   Retrns Java source string.
+
+   For-AST:
+     :decl - Any
+     :test - Any
+     :iters - (Map | [Map])
+     :body - Any
+
+   Jenerated statements will have the form:
+     for (decl; test; iter[, iters]) { body }
+
+   Any element may be nil - in this case corresponding element ill be missing.
+   (E.g. no declaration or a predicate, which is totally valid in the 'for'.)
+
+   ':iters' may be either a map (single AST element) or a seqable collection,
+   of multiple elements - in this case multiple iteration actions wil be jenerated.
+
+   In case of an empty body - result 'for' will have an empty {} brackets."
   [jen-fn {:keys [decl test iters body]}]
   {:pre [(or (nil? iters) (map? iters) (every? some? iters))]}
   (let [decl-str (if (nil? decl) ";" (jen-fn decl))
