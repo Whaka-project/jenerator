@@ -96,3 +96,18 @@
         iter-str (->> iters (map jen-fn) u/jn-comma)
         body-str (jen-fn (ensure-block body))]
     (str "for (" decl-str " " test-str "; " iter-str ") " body-str)))
+
+(defn jenerate-label
+  "; (Any -> String) -> Label-AST -> String
+   Takes a jen function, and an AST map for a label statement.
+   Returns Java source code string.
+
+   Label-AST:
+     :name - String
+     :statement - Any
+
+   Name is jenerated into label.
+   Statemen is jenerated recursively."
+  [jen-fn {:keys [name statement]}]
+  {:pre [(string? name) (some? statement)]}
+  (str name ": " (jen-fn statement)))

@@ -36,6 +36,7 @@
             :field (jops/jenerate-field-access jen data)
             :method (jops/jenerate-method-call jen data)
             :block (jstats/jenerate-code-block jen data)
+            :label (jstats/jenerate-label jen data)
             :if (jstats/jenerate-if jen data)
             :for (jstats/jenerate-for jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
