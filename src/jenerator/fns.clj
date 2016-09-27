@@ -315,3 +315,11 @@
    Returns an AST map for the returns statement."
   ([] (branch :return))
   ([target] (branch :return target)))
+
+(defn switch
+  [target & cases]
+  (let [pairs (->> cases (partition 2) vec)
+        pairs (if (odd? (count cases))
+                        (conj pairs [nil (last cases)])
+                        pairs)]
+    {:jtag :switch :target target :cases pairs}))
