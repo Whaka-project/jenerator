@@ -280,3 +280,10 @@
            0 nil
            1 (first body)
            (apply block body))})
+
+(defn label
+  "; String -> Any -> Label-AST
+   Takes a string label name, and a single statement.
+   Returns an AST map for label statement."
+  [name statement]
+  {:jtag :label :name name :statement statement})
