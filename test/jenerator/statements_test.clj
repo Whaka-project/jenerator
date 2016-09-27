@@ -142,3 +142,25 @@
    :iters nil
    :body nil}
   )
+
+(deftest= jenerate-label
+
+  (jen {:jtag :label :name "qwe" :statement 12})
+  "qwe: 12"
+
+  ; 'as-statement' meta is propagated to the 'statement' value
+  (jen (j/block {:jtag :label :name "zzz" :statement (j/call System ["exit" 0])}))
+  "{\n\tzzz: System.exit(0);\n}"
+  )
+
+(deftest= label-fn
+
+  (j/label "qwe" 12)
+  {:jtag :label :name "qwe" :statement 12}
+
+  (jen
+   (j/label "zzz"
+    (j/block
+     (j/call System ["exit" 0]))))
+  "zzz: {\n\tSystem.exit(0);\n}"
+  )

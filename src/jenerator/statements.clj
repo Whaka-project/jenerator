@@ -108,6 +108,10 @@
 
    Name is jenerated into label.
    Statemen is jenerated recursively."
-  [jen-fn {:keys [name statement]}]
+  [jen-fn {:keys [name statement] :as data}]
   {:pre [(string? name) (some? statement)]}
-  (str name ": " (jen-fn statement)))
+  (let [is-statement (-> data meta :as-statement)
+        statement (if is-statement
+                    (vary-meta statement assoc :as-statement is-statement)
+                    statement)]
+    (str name ": " (jen-fn statement))))
