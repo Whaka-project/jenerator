@@ -300,7 +300,7 @@
   ([] (branch :break))
   ([label] (branch :break label)))
 
-(defn conntinue
+(defn continue
   "; -> Branch-AST
    ; (String | Symbol) -> Branch-AST
    Optionally takes a symbol or a string name of a label.
