@@ -39,6 +39,7 @@
             :label (jstats/jenerate-label jen data)
             :if (jstats/jenerate-if jen data)
             :for (jstats/jenerate-for jen data)
+            :branch (jstats/jenerate-branch jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 

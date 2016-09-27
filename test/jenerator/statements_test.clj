@@ -2,7 +2,7 @@
   (:require [jenerator.core :refer [jen]]
             [jenerator.fns :as j]
             [jenerator.test-macros :refer [deftest=]]
-            [clojure.test :as t]))
+            [clojure.test :refer :all]))
 
 (def st (j/unary 12 '++))
 
@@ -163,4 +163,38 @@
     (j/block
      (j/call System ["exit" 0]))))
   "zzz: {\n\tSystem.exit(0);\n}"
+  )
+
+(deftest= jenerate-branches
+
+  (jen {:jtag :branch :mode :break}) "break;"
+  (jen {:jtag :branch :mode :break :target "qwe"}) "break qwe;"
+
+  (jen {:jtag :branch :mode :continue}) "continue;"
+  (jen {:jtag :branch :mode :continue :target "qwe"}) "continue qwe;"
+
+  ; In ':return' mode - target is also jenerated
+  (jen {:jtag :branch :mode :return}) "return;"
+  (jen {:jtag :branch :mode :return :target "qwe"}) "return \"qwe\";"
+
+  ; ':force-jen' and ':skip-check?' flags are possible
+  (jen {:jtag :branch :mode :break :target "qwe" :force-jen true}) "break \"qwe\";"
+  (jen {:jtag :branch :mode :qweqwe :target "qwe" :skip-check? true}) "qweqwe qwe;"
+  )
+
+(deftest jenerate-branch-error
+  ; Without a ':skip-check?' flag - unknown mode causes an exception
+  (is (thrown? AssertionError (jen {:jtag :branch :mode :qweqwe})))
+  )
+
+(deftest= branches-fns
+
+  (j/break) {:jtag :branch :mode :break}
+  (j/break "qwe") {:jtag :branch :mode :break :target "qwe"}
+
+  (j/continue) {:jtag :branch :mode :continue}
+  (j/continue "qwe") {:jtag :branch :mode :continue :target "qwe"}
+
+  (j/return) {:jtag :branch :mode :return}
+  (j/return "qwe") {:jtag :branch :mode :return :target "qwe"}
   )

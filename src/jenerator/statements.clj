@@ -115,3 +115,26 @@
                     (vary-meta statement assoc :as-statement is-statement)
                     statement)]
     (str name ": " (jen-fn statement))))
+
+(defn jenerate-branch
+  "; (Any -> String) -> Branch-AST -> String
+   Takes a jen function, and an AST map for a branch statement.
+   Returns Java source code string.
+
+   Branch-AST:
+     :mode - Keyword
+     :target - Any
+
+   ':mode' is one of the: #{:break, :continue, :return}
+   If mode is ':return' - target gets jenerated (if present).
+   Otherwise target expected to be a string, or a symbol."
+  [jen-fn {:keys [mode target] :or {target ::none} :as data}]
+  {:pre [(keyword? mode)]}
+  (if-not (:skip-check? data)
+    (assert (#{:return :break :continue} mode)))
+  (let [force-jen (or (= mode :return) (:force-jen data))
+        is-target (not= target ::none)
+        target (if (and force-jen is-target) (jen-fn target) target)]
+    (if is-target
+      (str (name mode) " " target ";")
+      (str (name mode) ";"))))
