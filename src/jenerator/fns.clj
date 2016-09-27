@@ -287,3 +287,31 @@
    Returns an AST map for label statement."
   [name statement]
   {:jtag :label :name name :statement statement})
+
+(defn- branch
+  ([mode] {:jtag :branch :mode mode})
+  ([mode target] {:jtag :branch :mode mode :target target}))
+
+(defn break
+  "; -> Branch-AST
+   ; (String | Symbol) -> Branch-AST
+   Optionally takes a symbol or a string name of a label.
+   Returns an AST map for the break statement."
+  ([] (branch :break))
+  ([label] (branch :break label)))
+
+(defn conntinue
+  "; -> Branch-AST
+   ; (String | Symbol) -> Branch-AST
+   Optionally takes a symbol or a string name of a label.
+   Returns an AST map for the continue statement."
+  ([] (branch :continue))
+  ([label] (branch :continue label)))
+
+(defn return
+  "; -> Branch-AST
+   ; Any -> Branch-AST
+   Optionally taked a return value.
+   Returns an AST map for the returns statement."
+  ([] (branch :return))
+  ([target] (branch :return target)))
