@@ -317,6 +317,18 @@
   ([target] (branch :return target)))
 
 (defn switch
+  "; Any -> Any* -> Switch-AST
+   Takes a target element, a vararg of the case-pairs,
+   and optional last (default) element.
+   All arguments starting from the second one,
+   will be partitioned into cases pairs.
+   If there's a last (non-even) element with no pair,
+   ir will be treated as the ':def' clause.
+   Example:
+     (switch 42
+       0 'statement a'
+       1 'statement b'
+       'default statement')"
   [target & cases]
   (let [pairs (->> cases (partition 2) vec)
         pairs (if (odd? (count cases))
