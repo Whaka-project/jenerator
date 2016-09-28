@@ -320,6 +320,6 @@
   [target & cases]
   (let [pairs (->> cases (partition 2) vec)
         pairs (if (odd? (count cases))
-                        (conj pairs [nil (last cases)])
+                        (conj pairs [:def (last cases)])
                         pairs)]
     {:jtag :switch :target target :cases pairs}))

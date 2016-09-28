@@ -142,14 +142,17 @@
 (defn- case-entry->block
   [jen-fn [cond code]]
   {:jtag :label
-   :name (if (some? cond)
-           (str "case " (jen-fn cond))
-           "default")
+   :name (if (= cond :def)
+           "default"
+           (str "case " (jen-fn cond)))
    :statement (ensure-block code)})
 
 (defn jenerate-switch
   [jen-fn {:keys [target cases]}]
-  {:pre [(some? target) (and (sequential? cases) (every? sequential? cases))]}
+  {:pre [(some? target) (and (sequential? cases)
+                             (not-empty cases)
+                             (every? sequential? cases)
+                             (every? #(= (count %) 2) cases))]}
   (let [target-str (jen-fn target)
         case-blocks (map #(case-entry->block jen-fn %) cases)]
     (str "switch (" target-str ") " (jenerate-code-block jen-fn {:statements case-blocks}))))

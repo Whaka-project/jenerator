@@ -198,3 +198,88 @@
   (j/return) {:jtag :branch :mode :return}
   (j/return "qwe") {:jtag :branch :mode :return :target "qwe"}
   )
+
+(deftest= jenerate-switch
+
+(jen {:jtag :switch :target 42 :cases [[0 (j/call System ["exit" 0])]]})
+"switch (42) {
+	case 0: {
+		System.exit(0);
+	}
+}"
+
+(jen {:jtag :switch :target 42
+      :cases [[0 (j/call System ["exit" 0])]
+              [1 (j/call System ["exit" 1])]]})
+"switch (42) {
+	case 0: {
+		System.exit(0);
+	}
+	case 1: {
+		System.exit(1);
+	}
+}"
+
+(jen {:jtag :switch :target 42
+      :cases [[0 (j/call System ["exit" 0])]
+              [1 (j/call System ["exit" 1])]
+              [:def (j/break)]]})
+"switch (42) {
+	case 0: {
+		System.exit(0);
+	}
+	case 1: {
+		System.exit(1);
+	}
+	default: {
+		break;
+	}
+}"
+
+(jen {:jtag :switch :target "qwe"
+      :cases [[nil (j/call System ["exit" 0])]
+              [:def (j/call System ["exit" 1])]]})
+"switch (\"qwe\") {
+	case null: {
+		System.exit(0);
+	}
+	default: {
+		System.exit(1);
+	}
+}"
+)
+
+(deftest switch-asserts
+
+  ; ':cases' key is required
+  (is (thrown? AssertionError (jen {:jtag :switch :target 42})))
+
+  ; ':cases' key is required to be a sequential
+  (is (thrown? AssertionError (jen {:jtag :switch :target 42 :cases 42})))
+
+  ; ':cases' key is required to be a NON-EMPTY sequential
+  (is (thrown? AssertionError (jen {:jtag :switch :target 42 :cases []})))
+
+  ; ':cases' key is required to contain sequentials
+  (is (thrown? AssertionError (jen {:jtag :switch :target 42 :cases [42]})))
+
+  ; ':cases' key is required to contain sequentials of the size 2 each
+  (is (thrown? AssertionError (jen {:jtag :switch :target 42 :cases [[42]]})))
+
+  ; ':target' key is required
+  (is (thrown? AssertionError (jen {:jtag :switch :cases [[42 (j/break)]]})))
+  )
+
+(deftest= switch-fn
+
+  (j/switch 42
+    0 (j/break "a")
+    1 (j/break "b"))
+  {:jtag :switch :target 42 :cases [[0 (j/break "a")] [1 (j/break "b")]]}
+
+  (j/switch 42
+    0 (j/break "a")
+    1 (j/break "b")
+    (j/break "c"))
+  {:jtag :switch :target 42 :cases [[0 (j/break "a")] [1 (j/break "b")] [:def (j/break "c")]]}
+  )
