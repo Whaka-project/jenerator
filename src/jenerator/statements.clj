@@ -138,3 +138,36 @@
     (if is-target
       (str (name mode) " " target ";")
       (str (name mode) ";"))))
+
+(defn- case-entry->block
+  "Takes a jen-function and a pair of: [case element, result code]
+   Returns a 'Label-AST' map that renders a Java's case-clause,
+   where the 'label' is just a 'case' with a jenerated cond-value."
+  [jen-fn [cond code]]
+  {:jtag :label
+   :name (if (= cond :def)
+           "default"
+           (str "case " (jen-fn cond)))
+   :statement (ensure-block code)})
+
+(defn jenerate-switch
+  "; (Any -> String) -> Switch-AST -> String
+   Takes a jen-function, and an AST map for the switch statement.
+   Returns Java source code string.
+
+   Switch-AST:
+     :target - Any
+     :cases - [[(Any | :def), Any]]
+
+   Target is also jenerated. Cases is a sequence of tuples,
+   where each first element is a case-cond (or the ':def' key
+   for the default clause), and second element is the case's code.
+   Note: code is wrapped in a block-sttement, so only sttement ASTs will work."
+  [jen-fn {:keys [target cases]}]
+  {:pre [(some? target) (and (sequential? cases)
+                             (not-empty cases)
+                             (every? sequential? cases)
+                             (every? #(= (count %) 2) cases))]}
+  (let [target-str (jen-fn target)
+        case-blocks (map #(case-entry->block jen-fn %) cases)]
+    (str "switch (" target-str ") " (jenerate-code-block jen-fn {:statements case-blocks}))))
