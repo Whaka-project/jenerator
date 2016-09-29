@@ -1,5 +1,7 @@
 (ns jenerator.declarations
-  (:require [jenerator.util :as u]))
+  (:require [jenerator
+             [util :as u]
+             [statements :as statements]]))
 
 (def ^:private jn-modifiers
   #(if (empty? %) "" ((u/joiner " " "" " ") %)))
@@ -74,4 +76,4 @@
         jen-throws (if (empty? jen-exceptions) ""
                      (str "throws " (u/jn-comma jen-exceptions)))]
     (str jen-prefix " " name (u/jn-args jen-args) jen-throws " "
-      (jen-fn (jenerator.statements/ensure-block body)))))
+      (jen-fn (statements/ensure-block body)))))
