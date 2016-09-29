@@ -37,7 +37,7 @@
   "Returns true if specified data is an IfThenElse-AST"
   (partial jtag? :if))
 
-(defn- ensure-block
+(defn ensure-block
   "If specified data is a Block-AST map - returns it unchanged.
    Otherwise - wraps it into a block AST and returns it."
   [data]

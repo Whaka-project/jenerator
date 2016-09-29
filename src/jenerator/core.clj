@@ -41,6 +41,7 @@
             :for (jstats/jenerate-for jen data)
             :switch (jstats/jenerate-switch jen data)
             :branch (jstats/jenerate-branch jen data)
+            :mdecl (jdecl/jenerate-method jen data)
             nil (u/error "Failed to find `:jtag` tag in data: " data)
             (u/error "Illegal `:jtag` tag in data: " data))))
 

@@ -1,6 +1,20 @@
 (ns jenerator.declarations
   (:require [jenerator.util :as u]))
 
+(def ^:private jn-modifiers
+  #(if (empty? %) "" ((u/joiner " " "" " ") %)))
+
+(defn- jenerate-modifiers
+  [jen-fn {:keys [annotations modifiers type annotations-newline]}]
+  {:pre [(every? keyword? modifiers) (some? type)]}
+  (let [jen-annotatons (map jen-fn annotations)
+        jen-modifiers (map clojure.core/name modifiers)
+        jen-type (jen-fn type)
+        newline (if (and (not-empty jen-annotatons) annotations-newline) \newline nil)
+        str-annotations (jn-modifiers jen-annotatons)
+        str-annotations (if newline (str (apply str (butlast str-annotations)) newline) str-annotations)]
+    (str str-annotations (jn-modifiers jen-modifiers) jen-type)))
+
 (defn jenerate-var
   "; (Any -> String) -> Var-AST -> String
    Function takes a jen function and a var AST map.
@@ -15,13 +29,8 @@
    Annotations and type are also jenerated.
    Modifiers are not validated, but must be keywords.
    Name is not validated, so be sure to produce valid Java identifier."
-  [jen-fn {:keys [annotations modifiers type name]}]
-  {:pre [(string? name) (every? keyword? modifiers) (not (nil? type))]}
-  (let [jen-annotatons (map jen-fn annotations)
-        jen-modifiers (map clojure.core/name modifiers)
-        jen-type (jen-fn type)
-        join #(if (empty? %) "" ((u/joiner " " "" " ") %))]
-    (str (join jen-annotatons) (join jen-modifiers) jen-type " " name)))
+  [jen-fn {:keys [annotations modifiers type name] :as data}]
+  (str (jenerate-modifiers jen-fn data) " " name))
 
 (defn- valid-additional-decl?
   "; Any -> Boolean
@@ -54,3 +63,15 @@
                (str main-str ", " name " = " (jen-fn value)))
              main-str
              values) ";")))
+
+(defn jenerate-method
+  [jen-fn {:keys [annotations modifiers type name args exceptions body] :as data}]
+  {:pre [(some? name)]}
+  (let [data (if (some? type) data (assoc data :type 'void))
+        jen-prefix (jenerate-modifiers jen-fn (assoc data :annotations-newline true))
+        jen-args (map jen-fn args)
+        jen-exceptions (map jen-fn exceptions)
+        jen-throws (if (empty? jen-exceptions) ""
+                     (str "throws " (u/jn-comma jen-exceptions)))]
+    (str jen-prefix " " name (u/jn-args jen-args) jen-throws " "
+      (jen-fn (jenerator.statements/ensure-block body)))))
