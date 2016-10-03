@@ -335,3 +335,14 @@
                         (conj pairs [:def (last cases)])
                         pairs)]
     {:jtag :switch :target target :cases pairs}))
+
+(defn mdecl
+  [& rest]
+  (let [[body & rest] (reverse rest)
+        [vectors varargs] (->> rest (split-with sequential?))
+        [modifiers annotations] (split-with keyword? varargs)
+        [exceptions args signature] (case (count vectors)
+                                      3 vectors
+                                      2 [[] (first vectors) (second vectors)]
+                                      (u/error "Two or three vectors expected!"))]
+    {:mods modifiers :anns annotations :exc exceptions :args args :sign signature :body body}))
