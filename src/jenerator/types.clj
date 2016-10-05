@@ -2,7 +2,7 @@
   (:require [jenerator.util :as u]))
 
 (def valid-primitive-types
-  #{:boolean :byte :short :char :int :long :float :double})
+  #{:boolean :byte :short :char :int :long :float :double :void})
 
 (defn jenerate-class-ref
   "Class -> String

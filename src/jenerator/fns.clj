@@ -344,5 +344,15 @@
         [exceptions args signature] (case (count vectors)
                                       3 vectors
                                       2 [[] (first vectors) (second vectors)]
-                                      (u/error "Two or three vectors expected!"))]
-    {:mods modifiers :anns annotations :exc exceptions :args args :sign signature :body body}))
+                                      (u/error "Two or three vectors expected in method declaration!"))
+        [type name] (case (count signature)
+                      1 [nil (first signature)]
+                      2 signature
+                      :else (u/error "Signature should contain either a single name, or a type and a name!"))
+        type (if ((u/anyp nil? map?) type) type (jenerator.fns/type type))
+        args (map #(if ((u/anyp nil? map?) %) % (apply jenerator.fns/var %)) args)
+        annotations (reverse annotations)
+        modifiers (reverse modifiers)]
+    {:modifiers modifiers :annotations annotations
+     :exceptions exceptions :args args :type type
+     :name name :body body :jtag :mdecl}))

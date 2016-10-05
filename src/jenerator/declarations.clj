@@ -6,16 +6,24 @@
 (def ^:private jn-modifiers
   #(if (empty? %) "" ((u/joiner " " "" " ") %)))
 
+(def ^:private jn-newline
+  #(if (empty? %) "" ((u/joiner (str \newline) "" (str \newline)) %)))
+
+(defn- jn-annotations
+  [annotations newline?]
+  (if newline?
+    (jn-newline annotations)
+    (jn-modifiers annotations)))
+
 (defn- jenerate-modifiers
   [jen-fn {:keys [annotations modifiers type annotations-newline]}]
   {:pre [(every? keyword? modifiers) (some? type)]}
   (let [jen-annotatons (map jen-fn annotations)
         jen-modifiers (map clojure.core/name modifiers)
         jen-type (jen-fn type)
-        newline (if (and (not-empty jen-annotatons) annotations-newline) \newline nil)
-        str-annotations (jn-modifiers jen-annotatons)
-        str-annotations (if newline (str (apply str (butlast str-annotations)) newline) str-annotations)]
-    (str str-annotations (jn-modifiers jen-modifiers) jen-type)))
+        str-annotations (jn-annotations jen-annotatons annotations-newline)
+        str-modifiers (jn-modifiers jen-modifiers)]
+    (str str-annotations str-modifiers jen-type)))
 
 (defn jenerate-var
   "; (Any -> String) -> Var-AST -> String
@@ -74,6 +82,6 @@
         jen-args (map jen-fn args)
         jen-exceptions (map jen-fn exceptions)
         jen-throws (if (empty? jen-exceptions) ""
-                     (str "throws " (u/jn-comma jen-exceptions)))]
+                     (str " throws " (u/jn-comma jen-exceptions)))]
     (str jen-prefix " " name (u/jn-args jen-args) jen-throws " "
       (jen-fn (statements/ensure-block body)))))
